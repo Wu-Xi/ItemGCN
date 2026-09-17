@@ -1,0 +1,31 @@
+# Python caches and local environments
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# Local datasets
+# /data/
+
+# Model checkpoints and experiment output
+/weights/
+/checkpoints/
+*.ckpt
+*.pt
+*.pth
+*.out
+/logs/
+/runs/
+/benchmark_logs/
+*.log
+events.out.tfevents.*
+
+# Local editor and operating-system files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+Desktop.ini
