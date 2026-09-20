@@ -19,6 +19,7 @@ venv/
 *.out
 /logs/
 /runs/
+/experiment_results/
 /benchmark_logs/
 *.log
 events.out.tfevents.*
