@@ -47,7 +47,7 @@ def early_stopping(log_value, best_value, stopping_step, expected_order='acc', f
     # early stopping strategy:
     assert expected_order in ['acc', 'dec']
 
-    if (expected_order == 'acc' and log_value >= best_value) or (expected_order == 'dec' and log_value <= best_value):
+    if (expected_order == 'acc' and log_value > best_value) or (expected_order == 'dec' and log_value < best_value):
         stopping_step = 0
         best_value = log_value
     else:

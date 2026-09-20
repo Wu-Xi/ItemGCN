@@ -350,6 +350,11 @@ def build_S(data_cf, mode='cooccurrence', norm_type=None, gamma=1.0,
     if mode == 'user_weighted' and (not np.isfinite(gamma) or gamma < 0):
         raise ValueError('gamma must be finite and non-negative')
 
+    # 打印解析默认值后的实际构图配置；ui 的用户度指数固定为 1，其他无关模式不使用 gamma
+    print(f"[build_S] mode={mode}, norm_type={norm_type}, \
+          gamma={gamma if mode == 'user_weighted' else '1.0 (fixed)' if mode == 'ui' else 'N/A'}, \
+          remove_diag={remove_diag}, top_k={top_k}, threshold={threshold}, rho={rho}")
+
     # 构建二值 R，并分别计算原始 UI 图上的用户度、物品度
     rows, cols = data_cf[:, 0], data_cf[:, 1]
     R = sp.csr_matrix((np.ones(len(rows), dtype=np.float64), (rows, cols)), shape=(n_users, n_items))
@@ -554,6 +559,11 @@ def load_data(model_args):
     if args.gnn == 'lightgcn':
         norm_mat = build_sparse_graph(train_cf)
         si_sub_norm_mat = None
+    elif args.gnn in ('simgcl', 'xsimgcl', 'sgl', 'xsgl', 'recdcl', 'xrecdcl',
+                      'xlightgcn', 'ahns', 'xahns', 'directau', 'xdirectau', 'graphau', 'xgraphau'):
+        norm_mat = build_sparse_graph(train_cf)
+        si_sub_norm_mat = (build_B(train_cf, mode=args.b_mode, a=args.b_a, b=args.b_b)
+                           if args.gnn.startswith('x') else None)
     elif args.gnn == 'igcn':
         # ===== 本次新增：接入 parser 的 B / S 构图参数 BEGIN ===== #
         # auto 转为 None，由 build_S 根据 mode 决定默认行为

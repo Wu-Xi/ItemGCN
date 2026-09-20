@@ -10,7 +10,7 @@ class ItemGraphConv(nn.Module):
     """
     def __init__(self, n_hops, embedding0, interact_mat, si_norm_mat):
         super().__init__()
-        if n_hops < 1:
+        if n_hops < 0:
             raise ValueError("n_hops must be positive")
 
         self.n_hops = n_hops
@@ -38,6 +38,9 @@ class ItemGraphConv(nn.Module):
         return torch.stack(user_embs, dim=1), torch.stack(item_embs, dim=1)
 
 class StabCF2(nn.Module):
+    requires_negative_sampling = True
+    negative_sample_count = 1
+
     def __init__(self, data_config, args_config, adj_mat, si_norm_mat):
         super().__init__()
 

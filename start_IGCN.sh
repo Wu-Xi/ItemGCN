@@ -8,20 +8,23 @@
 # yelp2018
 
 # python main.py  --gnn lightgcn --lr 1e-03 --l2 1e-03 --dataset ali --pool mean --batch_size 2048 --gpu_id 0 --n_negs 1 --embedding0 False
-
 # =================== 配置区 ===================
-DATASETS=(amazon ali yelp2018)
-Embedding0=(True False)
-GNN=(lightgcn)
+DATASETS=(yelp2018)
+Embedding0=(False)
+GNN=(igcn)
 NEGS=1
-CONTEXT_HOPS=(0 1 2 3)
-POOL=(concat mean sum final)
-GPU_ID=1
-LOG_DIR="./logs/LightGCN"
+CONTEXT_HOPS=(2)
+POOL=(final mean sum concat)
+B_MODE='sym'
+S_MODE='cooccurrence'
+S_NORM='sym'
+GPU_ID=0
+LOG_DIR="./logs/ItemGCN"
 # =============================================
 
 mkdir -p "$LOG_DIR"
 TS=$(date +"%m%d_%H%M")
+
 
 for i_data in "${DATASETS[@]}"; do
     for i_gnn in "${GNN[@]}"; do
@@ -36,8 +39,8 @@ for i_data in "${DATASETS[@]}"; do
                 fi
 
                 for i_pool in "${pool_list[@]}"; do
-                    # LOG="${LOG_DIR}/${TS}_${i_gnn}-${i_data}-hop${i_hops}-pool${i_pool}-negs${NEGS}-embedding0${i_embedding0}.log"
-                    LOG="${LOG_DIR}/${i_gnn}-${i_data}-hop${i_hops}-pool${i_pool}-negs${NEGS}-embedding0${i_embedding0}.log"
+                    LOG="${LOG_DIR}/${i_gnn}-${i_data}-hop${i_hops}-pool${i_pool}-negs${NEGS}-embedding0${i_embedding0}-${TS}.log"
+
                     echo "[$(date +%H:%M:%S)] START dataset=$i_data, gnn=$i_gnn, hops=$i_hops, pool=$i_pool, embedding0=$i_embedding0 → $LOG"
 
                     python main.py \
@@ -46,6 +49,9 @@ for i_data in "${DATASETS[@]}"; do
                         --pool "$i_pool" \
                         --n_negs "$NEGS" \
                         --context_hops "$i_hops" \
+                        --b_mode "$B_MODE" \
+                        --s_mode "$S_MODE" \
+                        --s_norm "$S_NORM" \
                         --gpu_id "$GPU_ID" \
                         --embedding0 "$i_embedding0" \
                         > "$LOG" 2>&1

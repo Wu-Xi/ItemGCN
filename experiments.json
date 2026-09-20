@@ -1,0 +1,208 @@
+{
+  "description": "User-selected Cartesian grids; dim 64, 3 hops, batch 2048, lr .001. Explicit L2 models: l2 .001 / Adam weight_decay 0; other models: l2 0 / Adam weight_decay .001. GraphAU uses alignment terms at hops 0 through 3.",
+  "datasets": [
+    "amazon",
+    "ali",
+    "yelp2018"
+  ],
+  "common": {
+    "epoch": 1000,
+    "test_batch_size": 2048,
+    "Ks": "[10,20,50]",
+    "save": false,
+    "b_mode": "sym",
+    "encoder": "lightgcn",
+    "context_hops": 3,
+    "batch_size": 2048,
+    "lr": 0.001,
+    "l2": 0.001,
+    "weight_decay": 0.0,
+    "embedding0": true,
+    "dim": 64
+  },
+  "models": {
+    "rns": {
+      "source": "User-selected experimental grid; not claimed official optimal settings.",
+      "shared": {
+        "pool": "mean",
+        "ns": "rns",
+        "n_negs": 1
+      },
+      "configs": [
+        {
+          "id": "baseline",
+          "params": {}
+        }
+      ]
+    },
+    "mixgcf": {
+      "source": "User-selected experimental grid; not claimed official optimal settings.",
+      "shared": {
+        "pool": "mean",
+        "ns": "mixgcf"
+      },
+      "grid": {
+        "n_negs": [
+          64,
+          32,
+          16
+        ]
+      }
+    },
+    "stabcf": {
+      "source": "User-selected experimental grid; not claimed official optimal settings.",
+      "shared": {
+        "pool": "mean",
+        "ns": "stabcf"
+      },
+      "grid": {
+        "n_negs": [
+          64,
+          32,
+          16
+        ],
+        "window_length": [
+          5,
+          10
+        ],
+        "alpha": [
+          20.0,
+          21.0
+        ]
+      }
+    },
+    "ahns": {
+      "source": "User-selected experimental grid; not claimed official optimal settings.",
+      "shared": {
+        "pool": "mean",
+        "p": -2,
+        "simi": "ip"
+      },
+      "grid": {
+        "alpha": [
+          0.1,
+          0.5,
+          1.0
+        ],
+        "beta": [
+          0.1,
+          0.4
+        ],
+        "n_negs": [
+          16,
+          32
+        ]
+      }
+    },
+    "directau": {
+      "source": "User-selected experimental grid; not claimed official optimal settings.",
+      "shared": {
+        "l2": 0.0,
+        "weight_decay": 0.001
+      },
+      "grid": {
+        "gamma": [
+          0.2,
+          0.5,
+          1,
+          2,
+          5,
+          10
+        ]
+      }
+    },
+    "graphau": {
+      "source": "User-selected experimental grid; not claimed official optimal settings.",
+      "shared": {
+        "graphau_layers": 4,
+        "l2": 0.0,
+        "weight_decay": 0.001
+      },
+      "grid": {
+        "gamma": [
+          0.2,
+          0.4,
+          1.7
+        ],
+        "decaying_base": [
+          0.5,
+          1.0,
+          1.5
+        ]
+      }
+    },
+    "simgcl": {
+      "source": "User-selected experimental grid; not claimed official optimal settings.",
+      "shared": {
+        "ssl_temp": 0.2
+      },
+      "grid": {
+        "cl_rate": [
+          0.5,
+          0.2,
+          2
+        ],
+        "eps": [
+          0.1,
+          0.5
+        ]
+      }
+    },
+    "sgl": {
+      "source": "User-selected experimental grid; not claimed official optimal settings.",
+      "shared": {},
+      "grid": {
+        "aug_type": [
+          0,
+          1,
+          2
+        ],
+        "drop_rate": [
+          0.1,
+          0.4
+        ],
+        "cl_rate": [
+          0.1,
+          0.5
+        ],
+        "ssl_temp": [
+          0.2,
+          0.5
+        ]
+      }
+    },
+    "recdcl": {
+      "source": "User-selected experimental grid; not claimed official optimal settings.",
+      "shared": {
+        "a": 1.0,
+        "degree": 4,
+        "polyc": 1e-07,
+        "all_bt_coeff": 1.0,
+        "l2": 0.0,
+        "weight_decay": 0.001
+      },
+      "grid": {
+        "bt_coeff": [
+          0.01,
+          0.05,
+          0.1
+        ],
+        "poly_coeff": [
+          0.2,
+          1,
+          2
+        ],
+        "momentum": [
+          0.1,
+          0.3,
+          0.5
+        ],
+        "mom_coeff": [
+          1,
+          5,
+          10
+        ]
+      }
+    }
+  }
+}

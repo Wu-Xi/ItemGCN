@@ -74,10 +74,10 @@ def test(model, user_dict, train_sp_mat, n_params, valid_pre, test_pre, item_gro
 
     ndcg_list, recall_list, precision_list, hit_list = [], [], [], []
     for k in eval(args.Ks):
-        ndcg_list.append(round(mean_ndcg[k-1],5))
-        recall_list.append(round(mean_recall[k-1],5))
-        precision_list.append(round(mean_precision[k-1],5))
-        hit_list.append(round(mean_hit[k-1],5))
+        ndcg_list.append(float(mean_ndcg[k-1]))
+        recall_list.append(float(mean_recall[k-1]))
+        precision_list.append(float(mean_precision[k-1]))
+        hit_list.append(float(mean_hit[k-1]))
         
     result = {'precision': precision_list,
             'recall': recall_list,
