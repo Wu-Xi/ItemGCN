@@ -28,10 +28,9 @@ bash start_joint_remaining.sh
 
 ```bash
 # 三个数据集分别指定卡号；应避免与本机其他分组重复占卡
-bash start_joint_recdcl.sh 0 1 2
-bash start_joint_sgl.sh 3 4 5
-bash start_joint_stabcf_ahns.sh 6 7 8
-bash start_joint_remaining.sh 9 10 11
+nohup bash start_joint_stabcf_ahns.sh 0 1 2 &
+nohup bash start_joint_sgl.sh 3 4 5 &
+nohup bash start_joint_remaining.sh 6 7 8 &
 
 # 只检查三个数据集的任务清单，不创建目录、不启动训练
 bash start_joint_recdcl.sh --dry-run
