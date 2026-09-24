@@ -18,6 +18,8 @@ venv/
 *.pth
 *.out
 /logs/
+/experiment_results/
+/analysis/
 /runs/
 /experiment_results/
 /benchmark_logs/
