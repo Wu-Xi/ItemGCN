@@ -3,6 +3,9 @@ import copy
 import io
 import itertools
 import json
+import os
+import re
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -17,6 +20,110 @@ import run_experiments as runner
 
 
 class JointSweepTest(unittest.TestCase):
+    @unittest.skipUnless(os.environ.get('BASH_TEST_EXE'), 'Set BASH_TEST_EXE for launcher integration test')
+    def test_two_nodes_six_gpus_partition_the_complete_sweep(self):
+        bash = os.environ['BASH_TEST_EXE']
+        env = dict(os.environ, PYTHON=Path(sys.executable).as_posix())
+        base = runner.read_json(ROOT/'experiments.json')
+        expected = set()
+        for dataset in base['datasets']:
+            config, _ = joint.build_joint_config(base, dataset, model='recdcl')
+            expected.update('recdcl/'+dataset+'/'+t['id'] for t in config['models']['recdcl']['configs'])
+        seen = set()
+        with tempfile.TemporaryDirectory() as temp:
+            output = Path(temp)/'unused'
+            for rank in (0, 1):
+                command = [bash, 'start_joint_recdcl_multigpu.sh', '0','1','2','3','4','5',
+                           '--num-nodes','2','--node-rank',str(rank),
+                           '--output-root',output.as_posix(),'--dry-run','--list-jobs']
+                run = subprocess.run(command,cwd=str(ROOT),env=env,stdout=subprocess.PIPE,
+                                     stderr=subprocess.PIPE,universal_newlines=True,timeout=180)
+                self.assertEqual(run.returncode,0,run.stderr)
+                assigned = re.findall(r'Validate (\w+) shard (\d+)/(\d+) -> GPU (\d+)',run.stdout)
+                self.assertEqual(assigned,[(d,str(rank*2+i), '4',str(di*2+i))
+                                          for di,d in enumerate(['ali','amazon','yelp2018']) for i in (0,1)])
+                jobs = [line.split(' -> ')[0] for line in run.stdout.splitlines() if line.endswith(' -> xrecdcl')]
+                self.assertEqual(len(jobs),3402)
+                self.assertEqual(len(set(jobs)),3402)
+                self.assertFalse(seen & set(jobs))
+                seen.update(jobs)
+                self.assertEqual(run.stdout.count('DRY RUN: validated 567 jobs'),6)
+                self.assertFalse(output.exists())
+            self.assertEqual(seen,expected)
+            for invalid in (['--num-nodes','0'], ['--num-nodes','2','--node-rank','2']):
+                run = subprocess.run([bash,'start_joint_recdcl_multigpu.sh','0','1','2',*invalid,'--dry-run'],
+                                     cwd=str(ROOT),env=env,stdout=subprocess.PIPE,stderr=subprocess.PIPE,
+                                     universal_newlines=True,timeout=20)
+                self.assertEqual(run.returncode,2)
+
+    def test_shards_cover_all_configs_once_and_preserve_parameters(self):
+        base = runner.read_json(ROOT / 'experiments.json')
+        for dataset in base['datasets']:
+            for include_sym in (False, True):
+                full, _ = joint.build_joint_config(base, dataset, model='recdcl', include_sym=include_sym)
+                original = copy.deepcopy(full)
+                expected = {t['id']: t for t in full['models']['recdcl']['configs']}
+                for n in (4, 5):
+                    combined = {}
+                    sizes = []
+                    for i in range(n):
+                        part = joint.shard_config(full, n, i)
+                        selected = {t['id']: t for t in part['models']['recdcl']['configs']}
+                        self.assertFalse(set(combined) & set(selected))
+                        combined.update(selected)
+                        sizes.append(len(selected))
+                    self.assertEqual(combined, expected)
+                    self.assertLessEqual(max(sizes)-min(sizes), 1)
+                    if n == 4 and not include_sym:
+                        self.assertEqual(sizes, [567]*4)
+                self.assertEqual(full, original)
+                self.assertEqual(joint.shard_config(full), original)
+        for count, index in ((0, 0), (4, -1), (4, 4), (3000, 0)):
+            with self.assertRaises(ValueError):
+                joint.shard_config(full, count, index)
+        # Shard boundaries can cross model boundaries without losing or duplicating jobs.
+        full, _ = joint.build_joint_config(base, 'ali', models=['rns', 'mixgcf'])
+        combined = set()
+        for i in range(5):
+            part = joint.shard_config(full, 5, i)
+            jobs = {(m,t['id']) for m,s in part['models'].items() for t in s['configs']}
+            self.assertFalse(combined & jobs)
+            combined.update(jobs)
+        self.assertEqual(len(combined), 112)
+
+    def test_sharded_execution_gpu_routing_resume_and_frozen_partition(self):
+        with tempfile.TemporaryDirectory() as temp:
+            output = Path(temp) / 'shard_2_of_4'
+            args = ['--dataset', 'ali', '--model', 'rns', '--gpu_id', '7',
+                    '--num-shards', '4', '--shard-index', '2', '--output', str(output)]
+            launches = []
+            def fake_training(command, **kwargs):
+                params = vars(runner.parse_args(command[3:]))
+                launches.append(params)
+                self.assertEqual(params['gpu_id'], 7)
+                self.assertEqual(params['gnn'], 'xlightgcn')
+                metrics = dict(recall=[.1,.2,.3],ndcg=[.1,.2,.3],hit_ratio=[.1,.2,.3])
+                runner.write_json(Path(params['run_dir'])/'result.json', dict(
+                    status='success',ks=[10,20,50],elapsed_seconds=.1,
+                    best=dict(epoch=1,selection_split='validation',validation=metrics,test=metrics)))
+                return SimpleNamespace(wait=lambda: 0)
+            with contextlib.redirect_stdout(io.StringIO()), mock.patch.object(runner.subprocess,'Popen',side_effect=fake_training):
+                self.assertEqual(joint.main(args + ['--dry-run']), 0)
+                self.assertFalse(output.exists())
+                self.assertEqual(len(launches), 0)
+                self.assertEqual(joint.main(args), 0)
+                self.assertEqual(len(launches), 7)
+                self.assertEqual(joint.main(args), 0)
+                self.assertEqual(len(launches), 7)
+                manifest = runner.read_json(output/'manifest.json')
+                expected = {t['id'] for t in joint.representation_trials()[2::4]}
+                self.assertEqual({j['id'].split('__B_')[1] for j in manifest['jobs']}, expected)
+                changed = list(args)
+                changed[changed.index('--shard-index')+1] = '1'
+                with contextlib.redirect_stderr(io.StringIO()), self.assertRaises(SystemExit):
+                    joint.main(changed)
+                self.assertEqual(len(launches), 7)
+
     def test_four_groups_partition_all_jobs_without_overlap(self):
         base = runner.read_json(ROOT / 'experiments.json')
         groups = [(['recdcl'], 2268), (['sgl'], 672),

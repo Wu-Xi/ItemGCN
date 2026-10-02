@@ -73,6 +73,33 @@ def build_joint_config(base, dataset, model='all', include_sym=False, models=Non
     return config, counts
 
 
+def shard_config(config, num_shards=1, shard_index=0):
+    """Partition the ordered joint jobs without changing their IDs or parameters."""
+    if num_shards < 1 or not 0 <= shard_index < num_shards:
+        raise ValueError('Require num_shards >= 1 and 0 <= shard_index < num_shards')
+    if num_shards == 1:
+        return config
+    total = sum(len(spec['configs']) for spec in config['models'].values())
+    if num_shards > total:
+        raise ValueError('More shards than jobs; reduce num_shards')
+    result = copy.deepcopy(config)
+    result['models'] = {}
+    index = 0
+    for model, spec in config['models'].items():
+        trials = []
+        for trial in spec['configs']:
+            if index % num_shards == shard_index:
+                trials.append(copy.deepcopy(trial))
+            index += 1
+        if trials:
+            result['models'][model] = copy.deepcopy(spec)
+            result['models'][model]['configs'] = trials
+    result['joint_sweep']['sharding'] = dict(
+        strategy='ordered_jobs_modulo_v1', num_shards=num_shards,
+        shard_index=shard_index, total_jobs=total)
+    return result
+
+
 def freeze_config(path, config):
     """Freeze the generated recipe list before handing control to the runner."""
     # This short-lived lock protects initial config creation from parallel launchers.
@@ -105,6 +132,10 @@ def main(argv=None):
     selection.add_argument('--models', nargs='+', choices=runner.MODELS,
                            help='Run a model subset in one sequential scheduler')
     parser.add_argument('--seed', type=int, default=2025)
+    parser.add_argument('--num-shards', type=int, default=1,
+                        help='Split the complete job list across independent schedulers')
+    parser.add_argument('--shard-index', type=int, default=0,
+                        help='Zero-based shard; use a separate output directory per shard')
     parser.add_argument('--include-sym', action='store_true',
                         help='Also train sym, restoring all 29 B constructions (default: 28)')
     parser.add_argument('--cpu', action='store_true')
@@ -118,6 +149,7 @@ def main(argv=None):
     try:
         config, counts = build_joint_config(runner.read_json(args.base_config), args.dataset, args.model,
                                             include_sym=args.include_sym, models=args.models)
+        config = shard_config(config, args.num_shards, args.shard_index)
     except (ValueError, KeyError, OSError) as exc:
         parser.error(str(exc))
 
@@ -127,6 +159,9 @@ def main(argv=None):
     for model, (base_count, total) in counts.items():
         print(f'  {model}: {base_count} base recipes x {b_count} B constructions = {total} jobs', flush=True)
     print(f'Total: {sum(total for _, total in counts.values())} jobs. Order: model -> base recipe -> B.', flush=True)
+    if args.num_shards > 1:
+        selected = sum(len(spec['configs']) for spec in config['models'].values())
+        print(f'Shard {args.shard_index}/{args.num_shards}: {selected} jobs assigned to this GPU.', flush=True)
     print('Output: ' + str(args.output.resolve()), flush=True)
     if args.dry_run:
         # Resolve and validate every CLI parameter without importing torch or training.

@@ -2,7 +2,67 @@
 
 入口 `run_joint_user_representation.py` 读取 `experiments.json` 的全部模型参数组合，按“模型 → 模型参数组合 → B 构造”的顺序执行。每一组模型参数都训练除 sym 外的 28 种 B，不再只使用模型网格的第一组。第一轮已在每组模型参数上运行 sym，本轮默认不重复。只运行 Item-only；Original 不依赖 B。需要完整同环境重跑时可添加 --include-sym，恢复 29 种。
 
-## 推荐：四组模型、十二张 GPU 并行
+## RecDCL 单独使用整个节点：多卡分片
+
+如果整个十二卡节点都空闲，使用新增入口，把三个数据集各分成4份，每份567组，12张卡并行。完整搜索仍是6804组，没有缩减81组模型参数或28种B。每张卡同时只训练一组。
+
+```bash
+# 只验证，不训练、不创建输出文件
+bash start_joint_recdcl_multigpu.sh 0 1 2 3 4 5 6 7 8 9 10 11 --dry-run
+
+# 正式启动：在服务器的项目目录、原训练环境内执行
+nohup bash start_joint_recdcl_multigpu.sh 0 1 2 3 4 5 6 7 8 9 10 11 > launch_recdcl_multigpu.log 2>&1 < /dev/null &
+```
+
+| 数据集 | GPU | 每卡任务数 |
+|---|---|---:|
+| Ali | 0、1、2、3 | 567 |
+| Amazon | 4、5、6、7 | 567 |
+| Yelp2018 | 8、9、10、11 | 567 |
+
+省略卡号时默认0至11。也可以指定其他数量的卡（至少3张，不重复），脚本按顺序尽量均分给三个数据集，余卡优先分配给Ali、Amazon。例如8张卡分成3/3/2。GPU编号沿用原训练代码的可见设备配置；脚本不自动检测节点空闲情况。
+
+```bash
+cat launch_recdcl_multigpu.log
+tail -f experiment_results/joint_user_repr_no_sym/recdcl_multigpu/ali/shard_0_of_4/scheduler.log
+```
+
+每个分片独立保存scheduler.log、summary.csv、manifest.json和训练日志。输出路径为`experiment_results/joint_user_repr_no_sym/recdcl_multigpu/<dataset>/shard_<index>_of_<count>/`。分片编号从0开始；Ali的0/1/2/3分片对应GPU 0/1/2/3，Amazon对应GPU 4/5/6/7，Yelp2018对应GPU 8/9/10/11。
+
+任务按完整配置列表的序号取模分配，保证同数据集各分片互不重叠、合并后覆盖所有配置。支持`--seed`、`--base-config`、`--include-sym`、`--output-root`、`--dry-run`和`--list-jobs`。续跑时保持相同的分片数量、种子、配置和输出根目录；已成功任务自动跳过。允许在保持分片数量的情况下更换GPU编号。分片数量变化会使用另一套分片目录，不会自动复用先前分片结果；旧的三卡RecDCL目录也不会自动导入。
+
+不要在旧调度进程仍运行时重复启动。该入口复用原来的锁和失败重试机制；启动日志只确认后台进程已提交，训练进度以各分片scheduler.log为准。上传服务器至少需要同步`start_joint_recdcl_multigpu.sh`与更新后的`run_joint_user_representation.py`，并保留已有`start_joint_user_representation.sh`等依赖。
+
+按每卡每天100组粗估：三卡约22.7天，十二卡约5.7天。只是理想吞吐估算，数据集耗时差异、共享CPU/磁盘瓶颈及失败重试会影响总耗时。静态分片按任务数均衡，不自动将已空闲的GPU转给其他分片。
+
+## 两个八卡节点，各用六张卡
+
+在两个节点各使用本地GPU 0至5，保留6、7号卡给其他人。两个节点需同步相同代码、数据、配置及训练环境，使用相同seed。每个节点的GPU数量必须一致；两台的GPU编号可以不同。该脚本按全局分片分工，无需节点间通信或分布式训练框架，也不需要共享存储。
+
+```bash
+# 节点A：rank=0
+nohup bash start_joint_recdcl_multigpu.sh 0 1 2 3 4 5 --num-nodes 2 --node-rank 0 > launch_recdcl_node0.log 2>&1 < /dev/null &
+
+# 节点B：rank=1，在另一台机器执行
+nohup bash start_joint_recdcl_multigpu.sh 0 1 2 3 4 5 --num-nodes 2 --node-rank 1 > launch_recdcl_node1.log 2>&1 < /dev/null &
+```
+
+| 节点 | 本地GPU | 数据集 | 全局分片 | 每卡任务数 |
+|---|---|---|---|---:|
+| A | 0、1 | Ali | 0、1 / 共4片 | 567 |
+| A | 2、3 | Amazon | 0、1 / 共4片 | 567 |
+| A | 4、5 | Yelp2018 | 0、1 / 共4片 | 567 |
+| B | 0、1 | Ali | 2、3 / 共4片 | 567 |
+| B | 2、3 | Amazon | 2、3 / 共4片 | 567 |
+| B | 4、5 | Yelp2018 | 2、3 / 共4片 | 567 |
+
+想先预览，在对应节点执行相同的bash命令并添加`--dry-run`，省略nohup和后台重定向即可。节点A和节点B不能使用相同node-rank，否则会重复分配任务；脚本不远程检查另一台节点。续跑时保留原num-nodes、node-rank、每节点卡数、配置、seed和输出位置。不要同时启动旧的12卡入口或三卡入口执行重叠任务。
+
+两个节点均使用默认输出根`experiment_results/joint_user_repr_no_sym/recdcl_multigpu/`，但A只写每个数据集的`shard_0_of_4`与`shard_1_of_4`，B只写`shard_2_of_4`与`shard_3_of_4`。共享文件系统下直接得到完整目录；独立本地磁盘则在完成后合并这两组互不重叠的分片子目录，保留各分片manifest、summary和训练日志，不覆盖同名分片。
+
+例如节点A的Ali GPU0日志是`ali/shard_0_of_4/scheduler.log`，节点B的Ali GPU0日志是`ali/shard_2_of_4/scheduler.log`（均相对上述输出根）。总共仍为6804次训练和12个并行训练进程；每卡每天100组时理想耗时约5.7天。
+
+## 四组模型同时运行：十二张 GPU 并行
 
 每个分组启动文件依次完成三个数据集的参数预览验证，然后启动三个后台调度进程。每个进程占用指定的一张 GPU、负责一个数据集；同组多模型在该进程中按顺序运行。
 
