@@ -62,6 +62,31 @@ nohup bash start_joint_recdcl_multigpu.sh 0 1 2 3 4 5 --num-nodes 2 --node-rank 
 
 例如节点A的Ali GPU0日志是`ali/shard_0_of_4/scheduler.log`，节点B的Ali GPU0日志是`ali/shard_2_of_4/scheduler.log`（均相对上述输出根）。总共仍为6804次训练和12个并行训练进程；每卡每天100组时理想耗时约5.7天。
 
+## 剩余五个方法：两节点各六卡
+
+`start_joint_remaining_multinode.sh` 运行RNS、MixGCF、DirectAU、GraphAU、SimGCL，分别为1、3、6、9、6组模型参数，每组搭配28种B（排除sym）。每个数据集700组，三个数据集2100组。两节点各使用六卡、每个数据集共四个分片，每卡175组。GPU 0/1负责Ali、2/3负责Amazon、4/5负责Yelp2018；默认不使用GPU 6/7。
+
+```bash
+# 节点A预览，确认每个分片175组；节点B把编号0换成1
+bash start_joint_remaining_multinode.sh 0 0 1 2 3 4 5 --dry-run
+
+# 节点A启动，首个0是节点编号，后六个数字是本地GPU编号
+nohup bash start_joint_remaining_multinode.sh 0 0 1 2 3 4 5 > launch_remaining_node0.log 2>&1 < /dev/null &
+
+# 节点B启动，首个1是节点编号
+nohup bash start_joint_remaining_multinode.sh 1 0 1 2 3 4 5 > launch_remaining_node1.log 2>&1 < /dev/null &
+```
+
+省略六个GPU编号时默认使用0至5。两个节点同步相同代码、数据、配置及环境；必须使用不同节点编号。支持`--dry-run`、`--list-jobs`（需dry-run）、`--seed`、`--base-config`和`--output-root`。复用`start_joint_user_representation.sh`与支持分片的`run_joint_user_representation.py`。
+
+默认输出根是`experiment_results/joint_user_repr_no_sym/remaining_multinode/`，其下为`<dataset>/shard_<index>_of_4/`。节点A写分片0/1，节点B写2/3；每片独立保存summary、manifest、scheduler和训练日志。节点A的Ali GPU0日志：
+
+```bash
+tail -f experiment_results/joint_user_repr_no_sym/remaining_multinode/ali/shard_0_of_4/scheduler.log
+```
+
+节点B对应`shard_2_of_4`。中断后保持原参数及输出目录续跑，成功任务跳过。此目录不自动导入旧`remaining`三卡目录；不要同时运行两种入口造成重复训练。该分配按实验数量均衡，各方法或数据集的耗时可能不同。
+
 ## 四组模型同时运行：十二张 GPU 并行
 
 每个分组启动文件依次完成三个数据集的参数预览验证，然后启动三个后台调度进程。每个进程占用指定的一张 GPU、负责一个数据集；同组多模型在该进程中按顺序运行。
