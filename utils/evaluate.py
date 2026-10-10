@@ -1,13 +1,11 @@
 from .parser import parse_args
 import torch
 import numpy as np
-args = parse_args()
-Ks = eval(args.Ks)
-device = torch.device("cuda:0") if args.cuda else torch.device("cpu")
-BATCH_SIZE = args.test_batch_size
 
 @torch.no_grad()
-def test(model, user_dict, train_sp_mat, n_params, valid_pre, test_pre, item_group_idx=None, mode='test'):
+def test(model, user_dict, train_sp_mat, n_params, valid_pre, test_pre, item_group_idx=None, mode='test', evaluation_args=None):
+    args = evaluation_args if evaluation_args is not None else parse_args()
+    device = torch.device('cuda:0' if args.cuda else 'cpu')
     global n_users, n_items
     n_users = n_params['n_users']
     n_items = n_params['n_items']
@@ -27,7 +25,7 @@ def test(model, user_dict, train_sp_mat, n_params, valid_pre, test_pre, item_gro
         uid2swap_idx, uid2rev_swap_idx, pos_len_list = valid_pre
 
     pos_len_list = np.array(pos_len_list)
-    u_batch_size = BATCH_SIZE
+    u_batch_size = args.test_batch_size
 
     test_users = list(test_user_set.keys())
     n_test_users = len(test_users)

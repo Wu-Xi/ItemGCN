@@ -1,0 +1,6472 @@
+{
+  "version": 1,
+  "description": "54 selected recipes; Original grid vs Item-only complete 29-B grid. Retrain once with seed 2025 and save best checkpoint.",
+  "data_files": {
+    "ali": {
+      "train.txt": {
+        "sha256": "c13a77ed4fdb1b2b8af24b6e8b0a8164a60e5bf7844e6921e1561cad2a079f04",
+        "bytes": 9456428
+      },
+      "test.txt": {
+        "sha256": "4f492176a2c2bee7b2009959e863a83e2da3824247ca7db58253e76264361061",
+        "bytes": 1167944
+      },
+      "valid.txt": {
+        "sha256": "12fd909f2a2617ba25aaf6e6a1840b36d523dcf15d8c683d57fbef5b4afbc35b",
+        "bytes": 1052290
+      }
+    },
+    "amazon": {
+      "train.txt": {
+        "sha256": "8344a8893ff14b5ff237ea6c356491d4edd195adef3318be289e90a954e2c5b5",
+        "bytes": 18188046
+      },
+      "test.txt": {
+        "sha256": "e0d123fcc2fc78b5dd4abdd5c5358825998ec193ff9f5ad1c78753fc81d3d42d",
+        "bytes": 2245941
+      },
+      "valid.txt": {
+        "sha256": "d823a7259422db5b4247208bd6d605564db04299694d1cf1de12cb9229139d7f",
+        "bytes": 2024110
+      }
+    },
+    "yelp2018": {
+      "train.txt": {
+        "sha256": "1e9568725a9e833d0ac3bae01c94cd95367f73b3bb6104fd26b5f65ea5054093",
+        "bytes": 6904880
+      },
+      "test.txt": {
+        "sha256": "9cd9b37926cd1447a06625ffa7914527573fb097c10cb0bbdb1d1b8ded3742fe",
+        "bytes": 1986152
+      }
+    }
+  },
+  "jobs": [
+    {
+      "dataset": "ali",
+      "model": "rns",
+      "phase": "original",
+      "B": null,
+      "recipe": "baseline",
+      "params": {
+        "dataset": "ali",
+        "data_path": "data/",
+        "gnn": "lightgcn",
+        "epoch": 1000,
+        "batch_size": 2048,
+        "test_batch_size": 2048,
+        "dim": 64,
+        "l2": 0.001,
+        "lr": 0.001,
+        "mess_dropout": false,
+        "mess_dropout_rate": 0.1,
+        "edge_dropout": false,
+        "edge_dropout_rate": 0.1,
+        "batch_test_flag": true,
+        "ns": "rns",
+        "n_negs": 1,
+        "pool": "mean",
+        "alpha": 1.0,
+        "embedding0": true,
+        "norm_type": "sym",
+        "split": "sub",
+        "abl": "full",
+        "b_mode": "sym",
+        "b_a": 0.5,
+        "b_b": 0.5,
+        "s_mode": "cooccurrence",
+        "s_norm": "auto",
+        "s_gamma": 1.0,
+        "s_remove_diag": "auto",
+        "s_top_k": null,
+        "s_threshold": 0.0,
+        "s_rho": 1.0,
+        "Ks": "[10,20,50]",
+        "test_flag": "part",
+        "context_hops": 3,
+        "save": true,
+        "encoder": "lightgcn",
+        "cl_rate": 0.1,
+        "eps": 0.1,
+        "ssl_temp": 0.2,
+        "drop_rate": 0.1,
+        "aug_type": 1,
+        "a": 1.0,
+        "polyc": 1e-07,
+        "degree": 4,
+        "poly_coeff": 0.2,
+        "bt_coeff": 0.01,
+        "all_bt_coeff": 1.0,
+        "mom_coeff": 10.0,
+        "momentum": 0.3,
+        "simi": "ip",
+        "p": -0.5,
+        "beta": 0.5,
+        "gamma": null,
+        "graphau_layers": 4,
+        "decaying_base": 1.4,
+        "seed": 2025,
+        "weight_decay": 0.0,
+        "window_length": 5
+      },
+      "reference_best": {
+        "epoch": 147,
+        "validation": {
+          "precision": [
+            0.0005157152778803986,
+            0.000449219038612154,
+            0.00038094956629674377
+          ],
+          "recall": [
+            0.004997069239824844,
+            0.008683300577778434,
+            0.017933531971257504
+          ],
+          "ndcg": [
+            0.0024806096459510083,
+            0.0034107298307141185,
+            0.005255179864650071
+          ],
+          "hit_ratio": [
+            0.005142375836744344,
+            0.008954826888123772,
+            0.018855378068062596
+          ]
+        },
+        "test": {
+          "precision": [
+            0.004755667089515332,
+            0.003662925376427455,
+            0.0024653907671945566
+          ],
+          "recall": [
+            0.04042692654845366,
+            0.0616593669535128,
+            0.10188115088875714
+          ],
+          "ndcg": [
+            0.022340558250139298,
+            0.027919768338035104,
+            0.036273815716378395
+          ],
+          "hit_ratio": [
+            0.04690860956373063,
+            0.07145220892394243,
+            0.1183056643318074
+          ]
+        },
+        "selection_split": "validation"
+      },
+      "source": "logs/itemgcn_grid04_final_20260924/experiment_results/grid04_full_2proc_20260923_0210_ali_original_nonrecdcl/original/rns/ali/baseline/attempt_001/result.json",
+      "config_selection": "test Recall@20",
+      "candidate_count": 1
+    },
+    {
+      "dataset": "ali",
+      "model": "rns",
+      "phase": "item_only",
+      "B": "degree_a0p25_b0p25",
+      "recipe": "baseline",
+      "params": {
+        "dataset": "ali",
+        "data_path": "data/",
+        "gnn": "xlightgcn",
+        "epoch": 1000,
+        "batch_size": 2048,
+        "test_batch_size": 2048,
+        "dim": 64,
+        "l2": 0.001,
+        "lr": 0.001,
+        "mess_dropout": false,
+        "mess_dropout_rate": 0.1,
+        "edge_dropout": false,
+        "edge_dropout_rate": 0.1,
+        "batch_test_flag": true,
+        "ns": "rns",
+        "n_negs": 1,
+        "pool": "mean",
+        "alpha": 1.0,
+        "embedding0": true,
+        "norm_type": "sym",
+        "split": "sub",
+        "abl": "full",
+        "b_mode": "degree",
+        "b_a": 0.25,
+        "b_b": 0.25,
+        "s_mode": "cooccurrence",
+        "s_norm": "auto",
+        "s_gamma": 1.0,
+        "s_remove_diag": "auto",
+        "s_top_k": null,
+        "s_threshold": 0.0,
+        "s_rho": 1.0,
+        "Ks": "[10,20,50]",
+        "test_flag": "part",
+        "context_hops": 3,
+        "save": true,
+        "encoder": "lightgcn",
+        "cl_rate": 0.1,
+        "eps": 0.1,
+        "ssl_temp": 0.2,
+        "drop_rate": 0.1,
+        "aug_type": 1,
+        "a": 1.0,
+        "polyc": 1e-07,
+        "degree": 4,
+        "poly_coeff": 0.2,
+        "bt_coeff": 0.01,
+        "all_bt_coeff": 1.0,
+        "mom_coeff": 10.0,
+        "momentum": 0.3,
+        "simi": "ip",
+        "p": -0.5,
+        "beta": 0.5,
+        "gamma": null,
+        "graphau_layers": 4,
+        "decaying_base": 1.4,
+        "seed": 2025,
+        "weight_decay": 0.0,
+        "window_length": 5
+      },
+      "reference_best": {
+        "epoch": 125,
+        "validation": {
+          "precision": [
+            0.0005600461040592299,
+            0.0004913333234820423,
+            0.0004164142272398074
+          ],
+          "recall": [
+            0.0054034351464641245,
+            0.009471896719026297,
+            0.0194321889647204
+          ],
+          "ndcg": [
+            0.002756754559092996,
+            0.003785420112903135,
+            0.005771126635850791
+          ],
+          "hit_ratio": [
+            0.00560046104059226,
+            0.009797112585521552,
+            0.020643388057275426
+          ]
+        },
+        "test": {
+          "precision": [
+            0.005417516959903205,
+            0.0041165683084224795,
+            0.0027199271965146292
+          ],
+          "recall": [
+            0.046028583178735274,
+            0.06908668931554639,
+            0.11099867185342702
+          ],
+          "ndcg": [
+            0.02565679360705233,
+            0.031713839232037584,
+            0.04045324912502854
+          ],
+          "hit_ratio": [
+            0.05334785726104462,
+            0.08033202801831119,
+            0.12965363190116375
+          ]
+        },
+        "selection_split": "validation"
+      },
+      "source": "logs/remaining_multinode_64way_20261003_results/projects/ItemGCN/experiment_results/joint_user_repr_no_sym/remaining_multinode_64way/ali/shard_8_of_22/item_only/rns/ali/baseline__B_degree_a0p25_b0p25/attempt_001/result.json",
+      "config_selection": "test Recall@20",
+      "candidate_count": 29
+    },
+    {
+      "dataset": "ali",
+      "model": "mixgcf",
+      "phase": "original",
+      "B": null,
+      "recipe": "n_negs-64",
+      "params": {
+        "dataset": "ali",
+        "data_path": "data/",
+        "gnn": "lightgcn",
+        "epoch": 1000,
+        "batch_size": 2048,
+        "test_batch_size": 2048,
+        "dim": 64,
+        "l2": 0.001,
+        "lr": 0.001,
+        "mess_dropout": false,
+        "mess_dropout_rate": 0.1,
+        "edge_dropout": false,
+        "edge_dropout_rate": 0.1,
+        "batch_test_flag": true,
+        "ns": "mixgcf",
+        "n_negs": 64,
+        "pool": "mean",
+        "alpha": 1.0,
+        "embedding0": true,
+        "norm_type": "sym",
+        "split": "sub",
+        "abl": "full",
+        "b_mode": "sym",
+        "b_a": 0.5,
+        "b_b": 0.5,
+        "s_mode": "cooccurrence",
+        "s_norm": "auto",
+        "s_gamma": 1.0,
+        "s_remove_diag": "auto",
+        "s_top_k": null,
+        "s_threshold": 0.0,
+        "s_rho": 1.0,
+        "Ks": "[10,20,50]",
+        "test_flag": "part",
+        "context_hops": 3,
+        "save": true,
+        "encoder": "lightgcn",
+        "cl_rate": 0.1,
+        "eps": 0.1,
+        "ssl_temp": 0.2,
+        "drop_rate": 0.1,
+        "aug_type": 1,
+        "a": 1.0,
+        "polyc": 1e-07,
+        "degree": 4,
+        "poly_coeff": 0.2,
+        "bt_coeff": 0.01,
+        "all_bt_coeff": 1.0,
+        "mom_coeff": 10.0,
+        "momentum": 0.3,
+        "simi": "ip",
+        "p": -0.5,
+        "beta": 0.5,
+        "gamma": null,
+        "graphau_layers": 4,
+        "decaying_base": 1.4,
+        "seed": 2025,
+        "weight_decay": 0.0,
+        "window_length": 5
+      },
+      "reference_best": {
+        "epoch": 34,
+        "validation": {
+          "precision": [
+            0.0010491628862323264,
+            0.0008770115112378461,
+            0.0006971761263724344
+          ],
+          "recall": [
+            0.00988049675857221,
+            0.01637605986977228,
+            0.03127099144048297
+          ],
+          "ndcg": [
+            0.004929573882960838,
+            0.006577075239336466,
+            0.00960203353607753
+          ],
+          "hit_ratio": [
+            0.01043252109408479,
+            0.017422014688280408,
+            0.034223397810057184
+          ]
+        },
+        "test": {
+          "precision": [
+            0.006044895482875046,
+            0.0042585902597765376,
+            0.002567150184766723
+          ],
+          "recall": [
+            0.05193364822489411,
+            0.07223727530870862,
+            0.10646141648060428
+          ],
+          "ndcg": [
+            0.029715171607470833,
+            0.03506997858806202,
+            0.04220511108457614
+          ],
+          "hit_ratio": [
+            0.05941481440626551,
+            0.08278638795433235,
+            0.12244222602173074
+          ]
+        },
+        "selection_split": "validation"
+      },
+      "source": "logs/itemgcn_grid04_final_20260924/experiment_results/grid04_full_2proc_20260923_0210_ali_original_nonrecdcl/original/mixgcf/ali/n_negs-64/attempt_001/result.json",
+      "config_selection": "test Recall@20",
+      "candidate_count": 3
+    },
+    {
+      "dataset": "ali",
+      "model": "mixgcf",
+      "phase": "item_only",
+      "B": "weighted_mean_b0p75",
+      "recipe": "n_negs-64",
+      "params": {
+        "dataset": "ali",
+        "data_path": "data/",
+        "gnn": "xlightgcn",
+        "epoch": 1000,
+        "batch_size": 2048,
+        "test_batch_size": 2048,
+        "dim": 64,
+        "l2": 0.001,
+        "lr": 0.001,
+        "mess_dropout": false,
+        "mess_dropout_rate": 0.1,
+        "edge_dropout": false,
+        "edge_dropout_rate": 0.1,
+        "batch_test_flag": true,
+        "ns": "mixgcf",
+        "n_negs": 64,
+        "pool": "mean",
+        "alpha": 1.0,
+        "embedding0": true,
+        "norm_type": "sym",
+        "split": "sub",
+        "abl": "full",
+        "b_mode": "weighted_mean",
+        "b_a": 0.0,
+        "b_b": 0.75,
+        "s_mode": "cooccurrence",
+        "s_norm": "auto",
+        "s_gamma": 1.0,
+        "s_remove_diag": "auto",
+        "s_top_k": null,
+        "s_threshold": 0.0,
+        "s_rho": 1.0,
+        "Ks": "[10,20,50]",
+        "test_flag": "part",
+        "context_hops": 3,
+        "save": true,
+        "encoder": "lightgcn",
+        "cl_rate": 0.1,
+        "eps": 0.1,
+        "ssl_temp": 0.2,
+        "drop_rate": 0.1,
+        "aug_type": 1,
+        "a": 1.0,
+        "polyc": 1e-07,
+        "degree": 4,
+        "poly_coeff": 0.2,
+        "bt_coeff": 0.01,
+        "all_bt_coeff": 1.0,
+        "mom_coeff": 10.0,
+        "momentum": 0.3,
+        "simi": "ip",
+        "p": -0.5,
+        "beta": 0.5,
+        "gamma": null,
+        "graphau_layers": 4,
+        "decaying_base": 1.4,
+        "seed": 2025,
+        "weight_decay": 0.0,
+        "window_length": 5
+      },
+      "reference_best": {
+        "epoch": 23,
+        "validation": {
+          "precision": [
+            0.0011791999763568887,
+            0.0009782335643461703,
+            0.0007456444963279631
+          ],
+          "recall": [
+            0.011166090717758297,
+            0.018255810040938528,
+            0.03372133041351194
+          ],
+          "ndcg": [
+            0.0056226838486830785,
+            0.007428676819606084,
+            0.010565751939437585
+          ],
+          "hit_ratio": [
+            0.011762445879449707,
+            0.019431678808387393,
+            0.03658770853959482
+          ]
+        },
+        "test": {
+          "precision": [
+            0.006265512106337673,
+            0.00456262754398597,
+            0.0027634989796485147
+          ],
+          "recall": [
+            0.05377191313333324,
+            0.07699007921077783,
+            0.11398200714675624
+          ],
+          "ndcg": [
+            0.030407806577601525,
+            0.03654762236627635,
+            0.04426305424331324
+          ],
+          "hit_ratio": [
+            0.06149688379019359,
+            0.08849484308642656,
+            0.1314185648888644
+          ]
+        },
+        "selection_split": "validation"
+      },
+      "source": "logs/remaining_multinode_64way_20261003_results/projects/ItemGCN/experiment_results/joint_user_repr_no_sym/remaining_multinode_64way/ali/shard_10_of_22/item_only/mixgcf/ali/n_negs-64__B_weighted_mean_b0p75/attempt_001/result.json",
+      "config_selection": "test Recall@20",
+      "candidate_count": 87
+    },
+    {
+      "dataset": "ali",
+      "model": "ahns",
+      "phase": "original",
+      "B": null,
+      "recipe": "alpha-0p1_beta-0p4_n_negs-32",
+      "params": {
+        "dataset": "ali",
+        "data_path": "data/",
+        "gnn": "ahns",
+        "epoch": 1000,
+        "batch_size": 2048,
+        "test_batch_size": 2048,
+        "dim": 64,
+        "l2": 0.001,
+        "lr": 0.001,
+        "mess_dropout": false,
+        "mess_dropout_rate": 0.1,
+        "edge_dropout": false,
+        "edge_dropout_rate": 0.1,
+        "batch_test_flag": true,
+        "ns": "rns",
+        "n_negs": 32,
+        "pool": "mean",
+        "alpha": 0.1,
+        "embedding0": true,
+        "norm_type": "sym",
+        "split": "sub",
+        "abl": "full",
+        "b_mode": "sym",
+        "b_a": 0.5,
+        "b_b": 0.5,
+        "s_mode": "cooccurrence",
+        "s_norm": "auto",
+        "s_gamma": 1.0,
+        "s_remove_diag": "auto",
+        "s_top_k": null,
+        "s_threshold": 0.0,
+        "s_rho": 1.0,
+        "Ks": "[10,20,50]",
+        "test_flag": "part",
+        "context_hops": 3,
+        "save": true,
+        "encoder": "lightgcn",
+        "cl_rate": 0.1,
+        "eps": 0.1,
+        "ssl_temp": 0.2,
+        "drop_rate": 0.1,
+        "aug_type": 1,
+        "a": 1.0,
+        "polyc": 1e-07,
+        "degree": 4,
+        "poly_coeff": 0.2,
+        "bt_coeff": 0.01,
+        "all_bt_coeff": 1.0,
+        "mom_coeff": 10.0,
+        "momentum": 0.3,
+        "simi": "ip",
+        "p": -2.0,
+        "beta": 0.4,
+        "gamma": null,
+        "graphau_layers": 4,
+        "decaying_base": 1.4,
+        "seed": 2025,
+        "weight_decay": 0.0,
+        "window_length": 5
+      },
+      "reference_best": {
+        "epoch": 8,
+        "validation": {
+          "precision": [
+            0.0006265423433274767,
+            0.0005201483604982804,
+            0.00044094395105875986
+          ],
+          "recall": [
+            0.0059994384762017345,
+            0.009872105566474075,
+            0.020430835179331627
+          ],
+          "ndcg": [
+            0.002942181110385478,
+            0.003924301524016483,
+            0.006035344550626875
+          ],
+          "hit_ratio": [
+            0.006250646491215108,
+            0.010299528615548299,
+            0.02178121259586541
+          ]
+        },
+        "test": {
+          "precision": [
+            0.005508521317081537,
+            0.004153107936683482,
+            0.00273481881859836
+          ],
+          "recall": [
+            0.046708602728370394,
+            0.07001098997167812,
+            0.11232128988049712
+          ],
+          "ndcg": [
+            0.02605860474217224,
+            0.03216677925240425,
+            0.04097210835392872
+          ],
+          "hit_ratio": [
+            0.05428547791076058,
+            0.08106282058353097,
+            0.13083944625227512
+          ]
+        },
+        "selection_split": "validation"
+      },
+      "source": "logs/itemgcn_grid04_final_20260924/experiment_results/grid04_full_2proc_20260923_0210_ali_original_nonrecdcl/original/ahns/ali/alpha-0p1_beta-0p4_n_negs-32/attempt_001/result.json",
+      "config_selection": "test Recall@20",
+      "candidate_count": 12
+    },
+    {
+      "dataset": "ali",
+      "model": "ahns",
+      "phase": "item_only",
+      "B": "weighted_mean_b0p25",
+      "recipe": "alpha-0p1_beta-0p4_n_negs-32",
+      "params": {
+        "dataset": "ali",
+        "data_path": "data/",
+        "gnn": "xahns",
+        "epoch": 1000,
+        "batch_size": 2048,
+        "test_batch_size": 2048,
+        "dim": 64,
+        "l2": 0.001,
+        "lr": 0.001,
+        "mess_dropout": false,
+        "mess_dropout_rate": 0.1,
+        "edge_dropout": false,
+        "edge_dropout_rate": 0.1,
+        "batch_test_flag": true,
+        "ns": "rns",
+        "n_negs": 32,
+        "pool": "mean",
+        "alpha": 0.1,
+        "embedding0": true,
+        "norm_type": "sym",
+        "split": "sub",
+        "abl": "full",
+        "b_mode": "weighted_mean",
+        "b_a": 0.0,
+        "b_b": 0.25,
+        "s_mode": "cooccurrence",
+        "s_norm": "auto",
+        "s_gamma": 1.0,
+        "s_remove_diag": "auto",
+        "s_top_k": null,
+        "s_threshold": 0.0,
+        "s_rho": 1.0,
+        "Ks": "[10,20,50]",
+        "test_flag": "part",
+        "context_hops": 3,
+        "save": true,
+        "encoder": "lightgcn",
+        "cl_rate": 0.1,
+        "eps": 0.1,
+        "ssl_temp": 0.2,
+        "drop_rate": 0.1,
+        "aug_type": 1,
+        "a": 1.0,
+        "polyc": 1e-07,
+        "degree": 4,
+        "poly_coeff": 0.2,
+        "bt_coeff": 0.01,
+        "all_bt_coeff": 1.0,
+        "mom_coeff": 10.0,
+        "momentum": 0.3,
+        "simi": "ip",
+        "p": -2.0,
+        "beta": 0.4,
+        "gamma": null,
+        "graphau_layers": 4,
+        "decaying_base": 1.4,
+        "seed": 2025,
+        "weight_decay": 0.0,
+        "window_length": 5
+      },
+      "reference_best": {
+        "epoch": 6,
+        "validation": {
+          "precision": [
+            0.0005866445997665286,
+            0.0005061102655416515,
+            0.0004601539757362527
+          ],
+          "recall": [
+            0.005604155276107163,
+            0.009623360375137302,
+            0.021339493974813824
+          ],
+          "ndcg": [
+            0.002818254452837437,
+            0.0038376098423141213,
+            0.0061772885486079745
+          ],
+          "hit_ratio": [
+            0.005836892113546023,
+            0.010048320600534925,
+            0.022741713829740072
+          ]
+        },
+        "test": {
+          "precision": [
+            0.005895979262037779,
+            0.004373035133197784,
+            0.002863328001765375
+          ],
+          "recall": [
+            0.050038061469848835,
+            0.07370514002186203,
+            0.11746661498647412
+          ],
+          "ndcg": [
+            0.027910586208619487,
+            0.03412136712879174,
+            0.0432527445808053
+          ],
+          "hit_ratio": [
+            0.05796701781479235,
+            0.08524074789035353,
+            0.13645138161160444
+          ]
+        },
+        "selection_split": "validation"
+      },
+      "source": "logs/itemgcn_joint_stabcf_ahns_sgl_24way_20260927_0536_full_20261002/experiment_results/joint_stabcf_ahns_sgl_24way_20260927_0536/outputs/ali/shard07/item_only/ahns/ali/alpha-0p1_beta-0p4_n_negs-32__B_weighted_mean_b0p25/attempt_001/result.json",
+      "config_selection": "test Recall@20",
+      "candidate_count": 348
+    },
+    {
+      "dataset": "ali",
+      "model": "stabcf",
+      "phase": "original",
+      "B": null,
+      "recipe": "n_negs-16_window_length-10_alpha-20p0",
+      "params": {
+        "dataset": "ali",
+        "data_path": "data/",
+        "gnn": "lightgcn",
+        "epoch": 1000,
+        "batch_size": 2048,
+        "test_batch_size": 2048,
+        "dim": 64,
+        "l2": 0.001,
+        "lr": 0.001,
+        "mess_dropout": false,
+        "mess_dropout_rate": 0.1,
+        "edge_dropout": false,
+        "edge_dropout_rate": 0.1,
+        "batch_test_flag": true,
+        "ns": "stabcf",
+        "n_negs": 16,
+        "pool": "mean",
+        "alpha": 20.0,
+        "embedding0": true,
+        "norm_type": "sym",
+        "split": "sub",
+        "abl": "full",
+        "b_mode": "sym",
+        "b_a": 0.5,
+        "b_b": 0.5,
+        "s_mode": "cooccurrence",
+        "s_norm": "auto",
+        "s_gamma": 1.0,
+        "s_remove_diag": "auto",
+        "s_top_k": null,
+        "s_threshold": 0.0,
+        "s_rho": 1.0,
+        "Ks": "[10,20,50]",
+        "test_flag": "part",
+        "context_hops": 3,
+        "save": true,
+        "encoder": "lightgcn",
+        "cl_rate": 0.1,
+        "eps": 0.1,
+        "ssl_temp": 0.2,
+        "drop_rate": 0.1,
+        "aug_type": 1,
+        "a": 1.0,
+        "polyc": 1e-07,
+        "degree": 4,
+        "poly_coeff": 0.2,
+        "bt_coeff": 0.01,
+        "all_bt_coeff": 1.0,
+        "mom_coeff": 10.0,
+        "momentum": 0.3,
+        "simi": "ip",
+        "p": -0.5,
+        "beta": 0.5,
+        "gamma": null,
+        "graphau_layers": 4,
+        "decaying_base": 1.4,
+        "seed": 2025,
+        "weight_decay": 0.0,
+        "window_length": 10
+      },
+      "reference_best": {
+        "epoch": 43,
+        "validation": {
+          "precision": [
+            0.0009294696555494897,
+            0.0008348972263679597,
+            0.0006534363778759818
+          ],
+          "recall": [
+            0.0088513882937065,
+            0.015851225747343847,
+            0.030079872890151738
+          ],
+          "ndcg": [
+            0.004447541559310669,
+            0.006226574378352581,
+            0.009087459651087171
+          ],
+          "hit_ratio": [
+            0.009250365729315976,
+            0.016624059817061457,
+            0.03240583393672514
+          ]
+        },
+        "test": {
+          "precision": [
+            0.0063082565771335605,
+            0.004627433677128123,
+            0.002887320059566945
+          ],
+          "recall": [
+            0.054139259336522534,
+            0.07798825355879065,
+            0.11910563475568091
+          ],
+          "ndcg": [
+            0.030576145356513505,
+            0.036876686484385725,
+            0.04542834005063013
+          ],
+          "hit_ratio": [
+            0.06208979096574927,
+            0.09006673652859742,
+            0.13736142518338756
+          ]
+        },
+        "selection_split": "validation"
+      },
+      "source": "logs/itemgcn_grid04_final_20260924/experiment_results/grid04_full_2proc_20260923_0210_ali_original_nonrecdcl/original/stabcf/ali/n_negs-16_window_length-10_alpha-20p0/attempt_001/result.json",
+      "config_selection": "test Recall@20",
+      "candidate_count": 12
+    },
+    {
+      "dataset": "ali",
+      "model": "stabcf",
+      "phase": "item_only",
+      "B": "mean",
+      "recipe": "n_negs-16_window_length-10_alpha-21p0",
+      "params": {
+        "dataset": "ali",
+        "data_path": "data/",
+        "gnn": "xlightgcn",
+        "epoch": 1000,
+        "batch_size": 2048,
+        "test_batch_size": 2048,
+        "dim": 64,
+        "l2": 0.001,
+        "lr": 0.001,
+        "mess_dropout": false,
+        "mess_dropout_rate": 0.1,
+        "edge_dropout": false,
+        "edge_dropout_rate": 0.1,
+        "batch_test_flag": true,
+        "ns": "stabcf",
+        "n_negs": 16,
+        "pool": "mean",
+        "alpha": 21.0,
+        "embedding0": true,
+        "norm_type": "sym",
+        "split": "sub",
+        "abl": "full",
+        "b_mode": "mean",
+        "b_a": 1.0,
+        "b_b": 0.0,
+        "s_mode": "cooccurrence",
+        "s_norm": "auto",
+        "s_gamma": 1.0,
+        "s_remove_diag": "auto",
+        "s_top_k": null,
+        "s_threshold": 0.0,
+        "s_rho": 1.0,
+        "Ks": "[10,20,50]",
+        "test_flag": "part",
+        "context_hops": 3,
+        "save": true,
+        "encoder": "lightgcn",
+        "cl_rate": 0.1,
+        "eps": 0.1,
+        "ssl_temp": 0.2,
+        "drop_rate": 0.1,
+        "aug_type": 1,
+        "a": 1.0,
+        "polyc": 1e-07,
+        "degree": 4,
+        "poly_coeff": 0.2,
+        "bt_coeff": 0.01,
+        "all_bt_coeff": 1.0,
+        "mom_coeff": 10.0,
+        "momentum": 0.3,
+        "simi": "ip",
+        "p": -0.5,
+        "beta": 0.5,
+        "gamma": null,
+        "graphau_layers": 4,
+        "decaying_base": 1.4,
+        "seed": 2025,
+        "weight_decay": 0.0,
+        "window_length": 10
+      },
+      "reference_best": {
+        "epoch": 25,
+        "validation": {
+          "precision": [
+            0.0009531127628448657,
+            0.0008408080031918033,
+            0.0006673267034120175
+          ],
+          "recall": [
+            0.009154315605928508,
+            0.01607583526664992,
+            0.03098503095769362
+          ],
+          "ndcg": [
+            0.004574526342073395,
+            0.006323923108410689,
+            0.009325714151576165
+          ],
+          "hit_ratio": [
+            0.00950157374432935,
+            0.01672749841147873,
+            0.0330855732714672
+          ]
+        },
+        "test": {
+          "precision": [
+            0.006561965694115581,
+            0.0047991009872599836,
+            0.0030227235122171586
+          ],
+          "recall": [
+            0.05644294463861272,
+            0.08136869992224956,
+            0.12522718130351834
+          ],
+          "ndcg": [
+            0.03218154425629307,
+            0.03874447768905051,
+            0.04789397129242277
+          ],
+          "hit_ratio": [
+            0.06464067067453533,
+            0.09367933373779715,
+            0.14429706028349237
+          ]
+        },
+        "selection_split": "validation"
+      },
+      "source": "logs/itemgcn_joint_stabcf_ahns_sgl_24way_20260927_0536_full_20261002/experiment_results/joint_stabcf_ahns_sgl_24way_20260927_0536/outputs/ali/shard03/item_only/stabcf/ali/n_negs-16_window_length-10_alpha-21p0__B_mean/attempt_001/result.json",
+      "config_selection": "test Recall@20",
+      "candidate_count": 348
+    },
+    {
+      "dataset": "ali",
+      "model": "directau",
+      "phase": "original",
+      "B": null,
+      "recipe": "gamma-1",
+      "params": {
+        "dataset": "ali",
+        "data_path": "data/",
+        "gnn": "directau",
+        "epoch": 1000,
+        "batch_size": 2048,
+        "test_batch_size": 2048,
+        "dim": 64,
+        "l2": 0.0,
+        "lr": 0.001,
+        "mess_dropout": false,
+        "mess_dropout_rate": 0.1,
+        "edge_dropout": false,
+        "edge_dropout_rate": 0.1,
+        "batch_test_flag": true,
+        "ns": "rns",
+        "n_negs": 64,
+        "pool": "mean",
+        "alpha": 1.0,
+        "embedding0": true,
+        "norm_type": "sym",
+        "split": "sub",
+        "abl": "full",
+        "b_mode": "sym",
+        "b_a": 0.5,
+        "b_b": 0.5,
+        "s_mode": "cooccurrence",
+        "s_norm": "auto",
+        "s_gamma": 1.0,
+        "s_remove_diag": "auto",
+        "s_top_k": null,
+        "s_threshold": 0.0,
+        "s_rho": 1.0,
+        "Ks": "[10,20,50]",
+        "test_flag": "part",
+        "context_hops": 3,
+        "save": true,
+        "encoder": "lightgcn",
+        "cl_rate": 0.1,
+        "eps": 0.1,
+        "ssl_temp": 0.2,
+        "drop_rate": 0.1,
+        "aug_type": 1,
+        "a": 1.0,
+        "polyc": 1e-07,
+        "degree": 4,
+        "poly_coeff": 0.2,
+        "bt_coeff": 0.01,
+        "all_bt_coeff": 1.0,
+        "mom_coeff": 10.0,
+        "momentum": 0.3,
+        "simi": "ip",
+        "p": -0.5,
+        "beta": 0.5,
+        "gamma": 1.0,
+        "graphau_layers": 4,
+        "decaying_base": 1.4,
+        "seed": 2025,
+        "weight_decay": 0.001,
+        "window_length": 5
+      },
+      "reference_best": {
+        "epoch": 5,
+        "validation": {
+          "precision": [
+            0.0005895999881784507,
+            0.0005075879597476125,
+            0.000444194878311874
+          ],
+          "recall": [
+            0.005579527039341145,
+            0.009539008664213694,
+            0.0202446744956313
+          ],
+          "ndcg": [
+            0.002704879930584871,
+            0.00371065034702306,
+            0.005859930620475813
+          ],
+          "hit_ratio": [
+            0.0058664459976652435,
+            0.010122205310832976,
+            0.022017643668819174
+          ]
+        },
+        "test": {
+          "precision": [
+            0.0056009045281565145,
+            0.004116568308422475,
+            0.0026454690860959677
+          ],
+          "recall": [
+            0.04688064758183106,
+            0.06834615655011587,
+            0.10783505312287439
+          ],
+          "ndcg": [
+            0.026332727580400662,
+            0.03200889109992717,
+            0.04024683212893969
+          ],
+          "hit_ratio": [
+            0.05491975070321549,
+            0.07987700623241961,
+            0.12602724615299762
+          ]
+        },
+        "selection_split": "validation"
+      },
+      "source": "logs/itemgcn_grid04_final_20260924/experiment_results/grid04_full_2proc_20260923_0210_ali_original_nonrecdcl/original/directau/ali/gamma-1/attempt_001/result.json",
+      "config_selection": "test Recall@20",
+      "candidate_count": 6
+    },
+    {
+      "dataset": "ali",
+      "model": "directau",
+      "phase": "item_only",
+      "B": "weighted_mean_b0p25",
+      "recipe": "gamma-1",
+      "params": {
+        "dataset": "ali",
+        "data_path": "data/",
+        "gnn": "xdirectau",
+        "epoch": 1000,
+        "batch_size": 2048,
+        "test_batch_size": 2048,
+        "dim": 64,
+        "l2": 0.0,
+        "lr": 0.001,
+        "mess_dropout": false,
+        "mess_dropout_rate": 0.1,
+        "edge_dropout": false,
+        "edge_dropout_rate": 0.1,
+        "batch_test_flag": true,
+        "ns": "rns",
+        "n_negs": 64,
+        "pool": "mean",
+        "alpha": 1.0,
+        "embedding0": true,
+        "norm_type": "sym",
+        "split": "sub",
+        "abl": "full",
+        "b_mode": "weighted_mean",
+        "b_a": 0.0,
+        "b_b": 0.25,
+        "s_mode": "cooccurrence",
+        "s_norm": "auto",
+        "s_gamma": 1.0,
+        "s_remove_diag": "auto",
+        "s_top_k": null,
+        "s_threshold": 0.0,
+        "s_rho": 1.0,
+        "Ks": "[10,20,50]",
+        "test_flag": "part",
+        "context_hops": 3,
+        "save": true,
+        "encoder": "lightgcn",
+        "cl_rate": 0.1,
+        "eps": 0.1,
+        "ssl_temp": 0.2,
+        "drop_rate": 0.1,
+        "aug_type": 1,
+        "a": 1.0,
+        "polyc": 1e-07,
+        "degree": 4,
+        "poly_coeff": 0.2,
+        "bt_coeff": 0.01,
+        "all_bt_coeff": 1.0,
+        "mom_coeff": 10.0,
+        "momentum": 0.3,
+        "simi": "ip",
+        "p": -0.5,
+        "beta": 0.5,
+        "gamma": 1.0,
+        "graphau_layers": 4,
+        "decaying_base": 1.4,
+        "seed": 2025,
+        "weight_decay": 0.001,
+        "window_length": 5
+      },
+      "reference_best": {
+        "epoch": 10,
+        "validation": {
+          "precision": [
+            0.0005763007403248014,
+            0.0005570907156473039,
+            0.00044862796092975693
+          ],
+          "recall": [
+            0.005481014092277077,
+            0.010478699038021072,
+            0.02066775881702071
+          ],
+          "ndcg": [
+            0.0028295211968506558,
+            0.004093811864537074,
+            0.006134044934579162
+          ],
+          "hit_ratio": [
+            0.005748230461188362,
+            0.011067929602648028,
+            0.02223929779971333
+          ]
+        },
+        "test": {
+          "precision": [
+            0.0061745077491593406,
+            0.004626744250179796,
+            0.00291600022061709
+          ],
+          "recall": [
+            0.05218371929776358,
+            0.07698549561972634,
+            0.1191094692029592
+          ],
+          "ndcg": [
+            0.029166069730008955,
+            0.03571272992404423,
+            0.04448817938410344
+          ],
+          "hit_ratio": [
+            0.06058684021841046,
+            0.0896668688985715,
+            0.13882301031382716
+          ]
+        },
+        "selection_split": "validation"
+      },
+      "source": "logs/remaining_multinode_64way_20261003_results/projects/ItemGCN/experiment_results/joint_user_repr_no_sym/remaining_multinode_64way/ali/shard_16_of_22/item_only/directau/ali/gamma-1__B_weighted_mean_b0p25/attempt_001/result.json",
+      "config_selection": "test Recall@20",
+      "candidate_count": 174
+    },
+    {
+      "dataset": "ali",
+      "model": "graphau",
+      "phase": "original",
+      "B": null,
+      "recipe": "gamma-1p7_decaying_base-1p5",
+      "params": {
+        "dataset": "ali",
+        "data_path": "data/",
+        "gnn": "graphau",
+        "epoch": 1000,
+        "batch_size": 2048,
+        "test_batch_size": 2048,
+        "dim": 64,
+        "l2": 0.0,
+        "lr": 0.001,
+        "mess_dropout": false,
+        "mess_dropout_rate": 0.1,
+        "edge_dropout": false,
+        "edge_dropout_rate": 0.1,
+        "batch_test_flag": true,
+        "ns": "rns",
+        "n_negs": 64,
+        "pool": "mean",
+        "alpha": 1.0,
+        "embedding0": true,
+        "norm_type": "sym",
+        "split": "sub",
+        "abl": "full",
+        "b_mode": "sym",
+        "b_a": 0.5,
+        "b_b": 0.5,
+        "s_mode": "cooccurrence",
+        "s_norm": "auto",
+        "s_gamma": 1.0,
+        "s_remove_diag": "auto",
+        "s_top_k": null,
+        "s_threshold": 0.0,
+        "s_rho": 1.0,
+        "Ks": "[10,20,50]",
+        "test_flag": "part",
+        "context_hops": 3,
+        "save": true,
+        "encoder": "lightgcn",
+        "cl_rate": 0.1,
+        "eps": 0.1,
+        "ssl_temp": 0.2,
+        "drop_rate": 0.1,
+        "aug_type": 1,
+        "a": 1.0,
+        "polyc": 1e-07,
+        "degree": 4,
+        "poly_coeff": 0.2,
+        "bt_coeff": 0.01,
+        "all_bt_coeff": 1.0,
+        "mom_coeff": 10.0,
+        "momentum": 0.3,
+        "simi": "ip",
+        "p": -0.5,
+        "beta": 0.5,
+        "gamma": 1.7,
+        "graphau_layers": 4,
+        "decaying_base": 1.5,
+        "seed": 2025,
+        "weight_decay": 0.001,
+        "window_length": 5
+      },
+      "reference_best": {
+        "epoch": 27,
+        "validation": {
+          "precision": [
+            0.000827508755338178,
+            0.0006952551239046513,
+            0.0005414271570641189
+          ],
+          "recall": [
+            0.007527515017946948,
+            0.012502396455376224,
+            0.023963424168454248
+          ],
+          "ndcg": [
+            0.0037644187943214652,
+            0.0050421598180526075,
+            0.007364779805945101
+          ],
+          "hit_ratio": [
+            0.008245533669262483,
+            0.013860771651914353,
+            0.026716711243775212
+          ]
+        },
+        "test": {
+          "precision": [
+            0.004787380729138079,
+            0.003525039986763316,
+            0.002243119519055901
+          ],
+          "recall": [
+            0.040104217877474056,
+            0.058554270524155634,
+            0.09170426118409225
+          ],
+          "ndcg": [
+            0.022606698812755226,
+            0.027460455532248292,
+            0.03435627159256023
+          ],
+          "hit_ratio": [
+            0.04688103248579781,
+            0.06863934697479455,
+            0.10761954663283878
+          ]
+        },
+        "selection_split": "validation"
+      },
+      "source": "logs/itemgcn_grid04_final_20260924/experiment_results/grid04_full_2proc_20260923_0210_ali_original_nonrecdcl/original/graphau/ali/gamma-1p7_decaying_base-1p5/attempt_001/result.json",
+      "config_selection": "test Recall@20",
+      "candidate_count": 9
+    },
+    {
+      "dataset": "ali",
+      "model": "graphau",
+      "phase": "item_only",
+      "B": "degree_a0p25_b0p5",
+      "recipe": "gamma-1p7_decaying_base-1p5",
+      "params": {
+        "dataset": "ali",
+        "data_path": "data/",
+        "gnn": "xgraphau",
+        "epoch": 1000,
+        "batch_size": 2048,
+        "test_batch_size": 2048,
+        "dim": 64,
+        "l2": 0.0,
+        "lr": 0.001,
+        "mess_dropout": false,
+        "mess_dropout_rate": 0.1,
+        "edge_dropout": false,
+        "edge_dropout_rate": 0.1,
+        "batch_test_flag": true,
+        "ns": "rns",
+        "n_negs": 64,
+        "pool": "mean",
+        "alpha": 1.0,
+        "embedding0": true,
+        "norm_type": "sym",
+        "split": "sub",
+        "abl": "full",
+        "b_mode": "degree",
+        "b_a": 0.25,
+        "b_b": 0.5,
+        "s_mode": "cooccurrence",
+        "s_norm": "auto",
+        "s_gamma": 1.0,
+        "s_remove_diag": "auto",
+        "s_top_k": null,
+        "s_threshold": 0.0,
+        "s_rho": 1.0,
+        "Ks": "[10,20,50]",
+        "test_flag": "part",
+        "context_hops": 3,
+        "save": true,
+        "encoder": "lightgcn",
+        "cl_rate": 0.1,
+        "eps": 0.1,
+        "ssl_temp": 0.2,
+        "drop_rate": 0.1,
+        "aug_type": 1,
+        "a": 1.0,
+        "polyc": 1e-07,
+        "degree": 4,
+        "poly_coeff": 0.2,
+        "bt_coeff": 0.01,
+        "all_bt_coeff": 1.0,
+        "mom_coeff": 10.0,
+        "momentum": 0.3,
+        "simi": "ip",
+        "p": -0.5,
+        "beta": 0.5,
+        "gamma": 1.7,
+        "graphau_layers": 4,
+        "decaying_base": 1.5,
+        "seed": 2025,
+        "weight_decay": 0.001,
+        "window_length": 5
+      },
+      "reference_best": {
+        "epoch": 37,
+        "validation": {
+          "precision": [
+            0.000712248607273217,
+            0.0006302365788423704,
+            0.0005192617439747003
+          ],
+          "recall": [
+            0.0067332554484003364,
+            0.01168031817293709,
+            0.023281860105260867
+          ],
+          "ndcg": [
+            0.0030853699382888994,
+            0.004353636684726971,
+            0.006702598722398237
+          ],
+          "hit_ratio": [
+            0.007078155246553278,
+            0.012501292982430216,
+            0.02559366364724484
+          ]
+        },
+        "test": {
+          "precision": [
+            0.006208979096575378,
+            0.004524019634880015,
+            0.002828029342011345
+          ],
+          "recall": [
+            0.05278475223290226,
+            0.07617243728086526,
+            0.11659544187402483
+          ],
+          "ndcg": [
+            0.029343536797932165,
+            0.035493240183773596,
+            0.04391537731230349
+          ],
+          "hit_ratio": [
+            0.06102807346533561,
+            0.08808118691743423,
+            0.13548618388395567
+          ]
+        },
+        "selection_split": "validation"
+      },
+      "source": "logs/remaining_multinode_64way_20261003_results/projects/ItemGCN/experiment_results/joint_user_repr_no_sym/remaining_multinode_64way/ali/shard_7_of_22/item_only/graphau/ali/gamma-1p7_decaying_base-1p5__B_degree_a0p25_b0p5/attempt_001/result.json",
+      "config_selection": "test Recall@20",
+      "candidate_count": 261
+    },
+    {
+      "dataset": "ali",
+      "model": "simgcl",
+      "phase": "original",
+      "B": null,
+      "recipe": "cl_rate-0p5_eps-0p5",
+      "params": {
+        "dataset": "ali",
+        "data_path": "data/",
+        "gnn": "simgcl",
+        "epoch": 1000,
+        "batch_size": 2048,
+        "test_batch_size": 2048,
+        "dim": 64,
+        "l2": 0.001,
+        "lr": 0.001,
+        "mess_dropout": false,
+        "mess_dropout_rate": 0.1,
+        "edge_dropout": false,
+        "edge_dropout_rate": 0.1,
+        "batch_test_flag": true,
+        "ns": "rns",
+        "n_negs": 64,
+        "pool": "mean",
+        "alpha": 1.0,
+        "embedding0": true,
+        "norm_type": "sym",
+        "split": "sub",
+        "abl": "full",
+        "b_mode": "sym",
+        "b_a": 0.5,
+        "b_b": 0.5,
+        "s_mode": "cooccurrence",
+        "s_norm": "auto",
+        "s_gamma": 1.0,
+        "s_remove_diag": "auto",
+        "s_top_k": null,
+        "s_threshold": 0.0,
+        "s_rho": 1.0,
+        "Ks": "[10,20,50]",
+        "test_flag": "part",
+        "context_hops": 3,
+        "save": true,
+        "encoder": "lightgcn",
+        "cl_rate": 0.5,
+        "eps": 0.5,
+        "ssl_temp": 0.2,
+        "drop_rate": 0.1,
+        "aug_type": 1,
+        "a": 1.0,
+        "polyc": 1e-07,
+        "degree": 4,
+        "poly_coeff": 0.2,
+        "bt_coeff": 0.01,
+        "all_bt_coeff": 1.0,
+        "mom_coeff": 10.0,
+        "momentum": 0.3,
+        "simi": "ip",
+        "p": -0.5,
+        "beta": 0.5,
+        "gamma": null,
+        "graphau_layers": 4,
+        "decaying_base": 1.4,
+        "seed": 2025,
+        "weight_decay": 0.0,
+        "window_length": 5
+      },
+      "reference_best": {
+        "epoch": 15,
+        "validation": {
+          "precision": [
+            0.0008511518626335546,
+            0.0007403247971864597,
+            0.0005807338229426885
+          ],
+          "recall": [
+            0.007911099805577663,
+            0.013523001781613043,
+            0.025556965975227327
+          ],
+          "ndcg": [
+            0.003901358381187391,
+            0.005348945211003182,
+            0.0077916812624341
+          ],
+          "hit_ratio": [
+            0.008481964742216247,
+            0.014673503465192913,
+            0.028253513217974674
+          ]
+        },
+        "test": {
+          "precision": [
+            0.005890463846451209,
+            0.004261347967569824,
+            0.0026200981743977657
+          ],
+          "recall": [
+            0.05010243272925462,
+            0.07104999754195375,
+            0.10719016681015829
+          ],
+          "ndcg": [
+            0.02872568479357055,
+            0.03429667143344865,
+            0.04185612638907354
+          ],
+          "hit_ratio": [
+            0.05788428658099388,
+            0.08266229110363466,
+            0.12448292978875958
+          ]
+        },
+        "selection_split": "validation"
+      },
+      "source": "logs/itemgcn_grid04_final_20260924/experiment_results/grid04_full_2proc_20260923_0210_ali_original_nonrecdcl/original/simgcl/ali/cl_rate-0p5_eps-0p5/attempt_001/result.json",
+      "config_selection": "test Recall@20",
+      "candidate_count": 6
+    },
+    {
+      "dataset": "ali",
+      "model": "simgcl",
+      "phase": "item_only",
+      "B": "degree_a0p75_b0p25",
+      "recipe": "cl_rate-0p2_eps-0p5",
+      "params": {
+        "dataset": "ali",
+        "data_path": "data/",
+        "gnn": "xsimgcl",
+        "epoch": 1000,
+        "batch_size": 2048,
+        "test_batch_size": 2048,
+        "dim": 64,
+        "l2": 0.001,
+        "lr": 0.001,
+        "mess_dropout": false,
+        "mess_dropout_rate": 0.1,
+        "edge_dropout": false,
+        "edge_dropout_rate": 0.1,
+        "batch_test_flag": true,
+        "ns": "rns",
+        "n_negs": 64,
+        "pool": "mean",
+        "alpha": 1.0,
+        "embedding0": true,
+        "norm_type": "sym",
+        "split": "sub",
+        "abl": "full",
+        "b_mode": "degree",
+        "b_a": 0.75,
+        "b_b": 0.25,
+        "s_mode": "cooccurrence",
+        "s_norm": "auto",
+        "s_gamma": 1.0,
+        "s_remove_diag": "auto",
+        "s_top_k": null,
+        "s_threshold": 0.0,
+        "s_rho": 1.0,
+        "Ks": "[10,20,50]",
+        "test_flag": "part",
+        "context_hops": 3,
+        "save": true,
+        "encoder": "lightgcn",
+        "cl_rate": 0.2,
+        "eps": 0.5,
+        "ssl_temp": 0.2,
+        "drop_rate": 0.1,
+        "aug_type": 1,
+        "a": 1.0,
+        "polyc": 1e-07,
+        "degree": 4,
+        "poly_coeff": 0.2,
+        "bt_coeff": 0.01,
+        "all_bt_coeff": 1.0,
+        "mom_coeff": 10.0,
+        "momentum": 0.3,
+        "simi": "ip",
+        "p": -0.5,
+        "beta": 0.5,
+        "gamma": null,
+        "graphau_layers": 4,
+        "decaying_base": 1.4,
+        "seed": 2025,
+        "weight_decay": 0.0,
+        "window_length": 5
+      },
+      "reference_best": {
+        "epoch": 18,
+        "validation": {
+          "precision": [
+            0.0009664120106985142,
+            0.0008659288046931391,
+            0.0006942207379605119
+          ],
+          "recall": [
+            0.009009870997295819,
+            0.01586822562765701,
+            0.030800891708491495
+          ],
+          "ndcg": [
+            0.004456513150488788,
+            0.0062150062570232095,
+            0.009234045653717991
+          ],
+          "hit_ratio": [
+            0.00961978928080623,
+            0.017141252789147812,
+            0.0339574128529842
+          ]
+        },
+        "test": {
+          "precision": [
+            0.00631652970051341,
+            0.004663973305389117,
+            0.002909657492692542
+          ],
+          "recall": [
+            0.054045056350209786,
+            0.07846909948116376,
+            0.11900477790778359
+          ],
+          "ndcg": [
+            0.030197890779143984,
+            0.03664607835316742,
+            0.04514547396641861
+          ],
+          "hit_ratio": [
+            0.06214494512161491,
+            0.09043902708069053,
+            0.1378991782030776
+          ]
+        },
+        "selection_split": "validation"
+      },
+      "source": "logs/remaining_multinode_64way_20261003_results/projects/ItemGCN/experiment_results/joint_user_repr_no_sym/remaining_multinode_64way/ali/shard_16_of_22/item_only/simgcl/ali/cl_rate-0p2_eps-0p5__B_degree_a0p75_b0p25/attempt_001/result.json",
+      "config_selection": "test Recall@20",
+      "candidate_count": 174
+    },
+    {
+      "dataset": "ali",
+      "model": "sgl",
+      "phase": "original",
+      "B": null,
+      "recipe": "aug_type-1_drop_rate-0p1_cl_rate-0p1_ssl_temp-0p2",
+      "params": {
+        "dataset": "ali",
+        "data_path": "data/",
+        "gnn": "sgl",
+        "epoch": 1000,
+        "batch_size": 2048,
+        "test_batch_size": 2048,
+        "dim": 64,
+        "l2": 0.001,
+        "lr": 0.001,
+        "mess_dropout": false,
+        "mess_dropout_rate": 0.1,
+        "edge_dropout": false,
+        "edge_dropout_rate": 0.1,
+        "batch_test_flag": true,
+        "ns": "rns",
+        "n_negs": 64,
+        "pool": "mean",
+        "alpha": 1.0,
+        "embedding0": true,
+        "norm_type": "sym",
+        "split": "sub",
+        "abl": "full",
+        "b_mode": "sym",
+        "b_a": 0.5,
+        "b_b": 0.5,
+        "s_mode": "cooccurrence",
+        "s_norm": "auto",
+        "s_gamma": 1.0,
+        "s_remove_diag": "auto",
+        "s_top_k": null,
+        "s_threshold": 0.0,
+        "s_rho": 1.0,
+        "Ks": "[10,20,50]",
+        "test_flag": "part",
+        "context_hops": 3,
+        "save": true,
+        "encoder": "lightgcn",
+        "cl_rate": 0.1,
+        "eps": 0.1,
+        "ssl_temp": 0.2,
+        "drop_rate": 0.1,
+        "aug_type": 1,
+        "a": 1.0,
+        "polyc": 1e-07,
+        "degree": 4,
+        "poly_coeff": 0.2,
+        "bt_coeff": 0.01,
+        "all_bt_coeff": 1.0,
+        "mom_coeff": 10.0,
+        "momentum": 0.3,
+        "simi": "ip",
+        "p": -0.5,
+        "beta": 0.5,
+        "gamma": null,
+        "graphau_layers": 4,
+        "decaying_base": 1.4,
+        "seed": 2025,
+        "weight_decay": 0.0,
+        "window_length": 5
+      },
+      "reference_best": {
+        "epoch": 31,
+        "validation": {
+          "precision": [
+            0.0008762726641348923,
+            0.0007691398342026982,
+            0.0006164940227269506
+          ],
+          "recall": [
+            0.008250107484661887,
+            0.01403305896198187,
+            0.027247630459768246
+          ],
+          "ndcg": [
+            0.004099395409656895,
+            0.005591784101667527,
+            0.008273435620614817
+          ],
+          "hit_ratio": [
+            0.008733172757229618,
+            0.01517591949521966,
+            0.030011969323068283
+          ]
+        },
+        "test": {
+          "precision": [
+            0.005425790083283055,
+            0.003931801886272525,
+            0.002443880646406948
+          ],
+          "recall": [
+            0.0462498273957602,
+            0.06594501296674299,
+            0.10005479736127888
+          ],
+          "ndcg": [
+            0.026120316400132532,
+            0.031317964411434585,
+            0.038468732831312004
+          ],
+          "hit_ratio": [
+            0.05312724063758204,
+            0.0761541007114886,
+            0.11618222933098009
+          ]
+        },
+        "selection_split": "validation"
+      },
+      "source": "logs/itemgcn_grid04_final_20260924/experiment_results/grid04_full_2proc_20260923_0210_ali_original_nonrecdcl/original/sgl/ali/aug_type-1_drop_rate-0p1_cl_rate-0p1_ssl_temp-0p2/attempt_001/result.json",
+      "config_selection": "test Recall@20",
+      "candidate_count": 24
+    },
+    {
+      "dataset": "ali",
+      "model": "sgl",
+      "phase": "item_only",
+      "B": "mean",
+      "recipe": "aug_type-1_drop_rate-0p1_cl_rate-0p1_ssl_temp-0p2",
+      "params": {
+        "dataset": "ali",
+        "data_path": "data/",
+        "gnn": "xsgl",
+        "epoch": 1000,
+        "batch_size": 2048,
+        "test_batch_size": 2048,
+        "dim": 64,
+        "l2": 0.001,
+        "lr": 0.001,
+        "mess_dropout": false,
+        "mess_dropout_rate": 0.1,
+        "edge_dropout": false,
+        "edge_dropout_rate": 0.1,
+        "batch_test_flag": true,
+        "ns": "rns",
+        "n_negs": 64,
+        "pool": "mean",
+        "alpha": 1.0,
+        "embedding0": true,
+        "norm_type": "sym",
+        "split": "sub",
+        "abl": "full",
+        "b_mode": "mean",
+        "b_a": 1.0,
+        "b_b": 0.0,
+        "s_mode": "cooccurrence",
+        "s_norm": "auto",
+        "s_gamma": 1.0,
+        "s_remove_diag": "auto",
+        "s_top_k": null,
+        "s_threshold": 0.0,
+        "s_rho": 1.0,
+        "Ks": "[10,20,50]",
+        "test_flag": "part",
+        "context_hops": 3,
+        "save": true,
+        "encoder": "lightgcn",
+        "cl_rate": 0.1,
+        "eps": 0.1,
+        "ssl_temp": 0.2,
+        "drop_rate": 0.1,
+        "aug_type": 1,
+        "a": 1.0,
+        "polyc": 1e-07,
+        "degree": 4,
+        "poly_coeff": 0.2,
+        "bt_coeff": 0.01,
+        "all_bt_coeff": 1.0,
+        "mom_coeff": 10.0,
+        "momentum": 0.3,
+        "simi": "ip",
+        "p": -0.5,
+        "beta": 0.5,
+        "gamma": null,
+        "graphau_layers": 4,
+        "decaying_base": 1.4,
+        "seed": 2025,
+        "weight_decay": 0.0,
+        "window_length": 5
+      },
+      "reference_best": {
+        "epoch": 31,
+        "validation": {
+          "precision": [
+            0.0009368581265792949,
+            0.0008156872016904674,
+            0.0006507765283052515
+          ],
+          "recall": [
+            0.008830454292455386,
+            0.01514193892542717,
+            0.02890512198877426
+          ],
+          "ndcg": [
+            0.00436859780753321,
+            0.0059839563140181495,
+            0.008783786403387152
+          ],
+          "hit_ratio": [
+            0.009309473497554416,
+            0.01618075155527315,
+            0.03181475625434073
+          ]
+        },
+        "test": {
+          "precision": [
+            0.0061979482654022445,
+            0.004501268545585433,
+            0.002775081352380305
+          ],
+          "recall": [
+            0.053443102267992156,
+            0.07613280520595773,
+            0.11437320219732357
+          ],
+          "ndcg": [
+            0.03035432071643433,
+            0.03635733533393389,
+            0.04437089206604958
+          ],
+          "hit_ratio": [
+            0.06095913077050356,
+            0.08746070266394573,
+            0.1320804147592521
+          ]
+        },
+        "selection_split": "validation"
+      },
+      "source": "logs/itemgcn_joint_stabcf_ahns_sgl_24way_20260927_0536_full_20261002/experiment_results/joint_stabcf_ahns_sgl_24way_20260927_0536/outputs/ali/shard00/item_only/sgl/ali/aug_type-1_drop_rate-0p1_cl_rate-0p1_ssl_temp-0p2__B_mean/attempt_001/result.json",
+      "config_selection": "test Recall@20",
+      "candidate_count": 696
+    },
+    {
+      "dataset": "ali",
+      "model": "recdcl",
+      "phase": "original",
+      "B": null,
+      "recipe": "bt_coeff-0p1_poly_coeff-0p2_momentum-0p5_mom_coeff-10",
+      "params": {
+        "dataset": "ali",
+        "data_path": "data/",
+        "gnn": "recdcl",
+        "epoch": 1000,
+        "batch_size": 2048,
+        "test_batch_size": 2048,
+        "dim": 64,
+        "l2": 0.0,
+        "lr": 0.001,
+        "mess_dropout": false,
+        "mess_dropout_rate": 0.1,
+        "edge_dropout": false,
+        "edge_dropout_rate": 0.1,
+        "batch_test_flag": true,
+        "ns": "rns",
+        "n_negs": 64,
+        "pool": "mean",
+        "alpha": 1.0,
+        "embedding0": true,
+        "norm_type": "sym",
+        "split": "sub",
+        "abl": "full",
+        "b_mode": "sym",
+        "b_a": 0.5,
+        "b_b": 0.5,
+        "s_mode": "cooccurrence",
+        "s_norm": "auto",
+        "s_gamma": 1.0,
+        "s_remove_diag": "auto",
+        "s_top_k": null,
+        "s_threshold": 0.0,
+        "s_rho": 1.0,
+        "Ks": "[10,20,50]",
+        "test_flag": "part",
+        "context_hops": 3,
+        "save": true,
+        "encoder": "lightgcn",
+        "cl_rate": 0.1,
+        "eps": 0.1,
+        "ssl_temp": 0.2,
+        "drop_rate": 0.1,
+        "aug_type": 1,
+        "a": 1.0,
+        "polyc": 1e-07,
+        "degree": 4,
+        "poly_coeff": 0.2,
+        "bt_coeff": 0.1,
+        "all_bt_coeff": 1.0,
+        "mom_coeff": 10.0,
+        "momentum": 0.5,
+        "simi": "ip",
+        "p": -0.5,
+        "beta": 0.5,
+        "gamma": null,
+        "graphau_layers": 4,
+        "decaying_base": 1.4,
+        "seed": 2025,
+        "weight_decay": 0.001,
+        "window_length": 5
+      },
+      "reference_best": {
+        "epoch": 30,
+        "validation": {
+          "precision": [
+            0.0003945443529915935,
+            0.00036868470438727733,
+            0.00032095518153472767
+          ],
+          "recall": [
+            0.0038124510513794277,
+            0.0071494539919908975,
+            0.015212111808612627
+          ],
+          "ndcg": [
+            0.0018924371453586419,
+            0.0027252966691414552,
+            0.0043193138849766995
+          ],
+          "hit_ratio": [
+            0.003945443529915919,
+            0.007358917145685872,
+            0.015885212714080946
+          ]
+        },
+        "test": {
+          "precision": [
+            0.004914235287629092,
+            0.0038518283602673297,
+            0.0026644972698696224
+          ],
+          "recall": [
+            0.041405454536316486,
+            0.06440088549600756,
+            0.10950445004729033
+          ],
+          "ndcg": [
+            0.022409295188722946,
+            0.02844695401440425,
+            0.037794136728542226
+          ],
+          "hit_ratio": [
+            0.048397771772103026,
+            0.0751475373669406,
+            0.1277370249848326
+          ]
+        },
+        "selection_split": "validation"
+      },
+      "source": "logs/itemgcn_grid04_final_20260924/experiment_results/grid04_full_2proc_20260923_0210_ali_original_recdcl/original/recdcl/ali/bt_coeff-0p1_poly_coeff-0p2_momentum-0p5_mom_coeff-10/attempt_001/result.json",
+      "config_selection": "test Recall@20",
+      "candidate_count": 81
+    },
+    {
+      "dataset": "ali",
+      "model": "recdcl",
+      "phase": "item_only",
+      "B": "weighted_mean_b0p5",
+      "recipe": "bt_coeff-0p05_poly_coeff-0p2_momentum-0p5_mom_coeff-10",
+      "params": {
+        "dataset": "ali",
+        "data_path": "data/",
+        "gnn": "xrecdcl",
+        "epoch": 1000,
+        "batch_size": 2048,
+        "test_batch_size": 2048,
+        "dim": 64,
+        "l2": 0.0,
+        "lr": 0.001,
+        "mess_dropout": false,
+        "mess_dropout_rate": 0.1,
+        "edge_dropout": false,
+        "edge_dropout_rate": 0.1,
+        "batch_test_flag": true,
+        "ns": "rns",
+        "n_negs": 64,
+        "pool": "mean",
+        "alpha": 1.0,
+        "embedding0": true,
+        "norm_type": "sym",
+        "split": "sub",
+        "abl": "full",
+        "b_mode": "weighted_mean",
+        "b_a": 0.0,
+        "b_b": 0.5,
+        "s_mode": "cooccurrence",
+        "s_norm": "auto",
+        "s_gamma": 1.0,
+        "s_remove_diag": "auto",
+        "s_top_k": null,
+        "s_threshold": 0.0,
+        "s_rho": 1.0,
+        "Ks": "[10,20,50]",
+        "test_flag": "part",
+        "context_hops": 3,
+        "save": true,
+        "encoder": "lightgcn",
+        "cl_rate": 0.1,
+        "eps": 0.1,
+        "ssl_temp": 0.2,
+        "drop_rate": 0.1,
+        "aug_type": 1,
+        "a": 1.0,
+        "polyc": 1e-07,
+        "degree": 4,
+        "poly_coeff": 0.2,
+        "bt_coeff": 0.05,
+        "all_bt_coeff": 1.0,
+        "mom_coeff": 10.0,
+        "momentum": 0.5,
+        "simi": "ip",
+        "p": -0.5,
+        "beta": 0.5,
+        "gamma": null,
+        "graphau_layers": 4,
+        "decaying_base": 1.4,
+        "seed": 2025,
+        "weight_decay": 0.001,
+        "window_length": 5
+      },
+      "reference_best": {
+        "epoch": 41,
+        "validation": {
+          "precision": [
+            0.0002925834527802818,
+            0.00026229072155808253,
+            0.00023613553411256703
+          ],
+          "recall": [
+            0.0028371728754451554,
+            0.005057408419901586,
+            0.011309040040587335
+          ],
+          "ndcg": [
+            0.0014345531536451653,
+            0.001995466787521288,
+            0.0032275959417260567
+          ],
+          "hit_ratio": [
+            0.0029258345278028166,
+            0.005216260547042395,
+            0.011762445879449707
+          ]
+        },
+        "test": {
+          "precision": [
+            0.004944570073355201,
+            0.003902845954443061,
+            0.002732888423143061
+          ],
+          "recall": [
+            0.04146333655465298,
+            0.06515395610216126,
+            0.11255480947864085
+          ],
+          "ndcg": [
+            0.02283836058499111,
+            0.02903780218439096,
+            0.0388584528959802
+          ],
+          "hit_ratio": [
+            0.0487286967072969,
+            0.07623683194528708,
+            0.13130825657713308
+          ]
+        },
+        "selection_split": "validation"
+      },
+      "source": "logs/recdcl_4node_4proc_20261002_0445_logs_and_results/experiment_results/recdcl_4node_4proc_20261002_0445/ali/shard_16_of_43/item_only/recdcl/ali/bt_coeff-0p05_poly_coeff-0p2_momentum-0p5_mom_coeff-10__B_weighted_mean_b0p5/attempt_001/result.json",
+      "config_selection": "test Recall@20",
+      "candidate_count": 2349
+    },
+    {
+      "dataset": "amazon",
+      "model": "rns",
+      "phase": "original",
+      "B": null,
+      "recipe": "baseline",
+      "params": {
+        "dataset": "amazon",
+        "data_path": "data/",
+        "gnn": "lightgcn",
+        "epoch": 1000,
+        "batch_size": 2048,
+        "test_batch_size": 2048,
+        "dim": 64,
+        "l2": 0.001,
+        "lr": 0.001,
+        "mess_dropout": false,
+        "mess_dropout_rate": 0.1,
+        "edge_dropout": false,
+        "edge_dropout_rate": 0.1,
+        "batch_test_flag": true,
+        "ns": "rns",
+        "n_negs": 1,
+        "pool": "mean",
+        "alpha": 1.0,
+        "embedding0": true,
+        "norm_type": "sym",
+        "split": "sub",
+        "abl": "full",
+        "b_mode": "sym",
+        "b_a": 0.5,
+        "b_b": 0.5,
+        "s_mode": "cooccurrence",
+        "s_norm": "auto",
+        "s_gamma": 1.0,
+        "s_remove_diag": "auto",
+        "s_top_k": null,
+        "s_threshold": 0.0,
+        "s_rho": 1.0,
+        "Ks": "[10,20,50]",
+        "test_flag": "part",
+        "context_hops": 3,
+        "save": true,
+        "encoder": "lightgcn",
+        "cl_rate": 0.1,
+        "eps": 0.1,
+        "ssl_temp": 0.2,
+        "drop_rate": 0.1,
+        "aug_type": 1,
+        "a": 1.0,
+        "polyc": 1e-07,
+        "degree": 4,
+        "poly_coeff": 0.2,
+        "bt_coeff": 0.01,
+        "all_bt_coeff": 1.0,
+        "mom_coeff": 10.0,
+        "momentum": 0.3,
+        "simi": "ip",
+        "p": -0.5,
+        "beta": 0.5,
+        "gamma": null,
+        "graphau_layers": 4,
+        "decaying_base": 1.4,
+        "seed": 2025,
+        "weight_decay": 0.0,
+        "window_length": 5
+      },
+      "reference_best": {
+        "epoch": 87,
+        "validation": {
+          "precision": [
+            0.003785610739947376,
+            0.0029032207235601968,
+            0.0019217193999751829
+          ],
+          "recall": [
+            0.03322243848892672,
+            0.05077762832464496,
+            0.08298057236549247
+          ],
+          "ndcg": [
+            0.017771187092761532,
+            0.022305341175883828,
+            0.02888830130359081
+          ],
+          "hit_ratio": [
+            0.037533089625614524,
+            0.057229295348544054,
+            0.09378545317030128
+          ]
+        },
+        "test": {
+          "precision": [
+            0.003074957099565718,
+            0.002344006718025765,
+            0.0015609186169632707
+          ],
+          "recall": [
+            0.027535653805633383,
+            0.04159641391845818,
+            0.06855081266690635
+          ],
+          "ndcg": [
+            0.015053345660748771,
+            0.01868902788501228,
+            0.024172136882466676
+          ],
+          "hit_ratio": [
+            0.03053780714885538,
+            0.0464420022636825,
+            0.0766950235496002
+          ]
+        },
+        "selection_split": "validation"
+      },
+      "source": "logs/itemgcn_grid04_final_20260924/experiment_results/grid04_full_2proc_20260923_0210_amazon_original_nonrecdcl/original/rns/amazon/baseline/attempt_001/result.json",
+      "config_selection": "test Recall@20",
+      "candidate_count": 1
+    },
+    {
+      "dataset": "amazon",
+      "model": "rns",
+      "phase": "item_only",
+      "B": "sum",
+      "recipe": "baseline",
+      "params": {
+        "dataset": "amazon",
+        "data_path": "data/",
+        "gnn": "xlightgcn",
+        "epoch": 1000,
+        "batch_size": 2048,
+        "test_batch_size": 2048,
+        "dim": 64,
+        "l2": 0.001,
+        "lr": 0.001,
+        "mess_dropout": false,
+        "mess_dropout_rate": 0.1,
+        "edge_dropout": false,
+        "edge_dropout_rate": 0.1,
+        "batch_test_flag": true,
+        "ns": "rns",
+        "n_negs": 1,
+        "pool": "mean",
+        "alpha": 1.0,
+        "embedding0": true,
+        "norm_type": "sym",
+        "split": "sub",
+        "abl": "full",
+        "b_mode": "sum",
+        "b_a": 0.0,
+        "b_b": 0.0,
+        "s_mode": "cooccurrence",
+        "s_norm": "auto",
+        "s_gamma": 1.0,
+        "s_remove_diag": "auto",
+        "s_top_k": null,
+        "s_threshold": 0.0,
+        "s_rho": 1.0,
+        "Ks": "[10,20,50]",
+        "test_flag": "part",
+        "context_hops": 3,
+        "save": true,
+        "encoder": "lightgcn",
+        "cl_rate": 0.1,
+        "eps": 0.1,
+        "ssl_temp": 0.2,
+        "drop_rate": 0.1,
+        "aug_type": 1,
+        "a": 1.0,
+        "polyc": 1e-07,
+        "degree": 4,
+        "poly_coeff": 0.2,
+        "bt_coeff": 0.01,
+        "all_bt_coeff": 1.0,
+        "mom_coeff": 10.0,
+        "momentum": 0.3,
+        "simi": "ip",
+        "p": -0.5,
+        "beta": 0.5,
+        "gamma": null,
+        "graphau_layers": 4,
+        "decaying_base": 1.4,
+        "seed": 2025,
+        "weight_decay": 0.0,
+        "window_length": 5
+      },
+      "reference_best": {
+        "epoch": 11,
+        "validation": {
+          "precision": [
+            0.0040794781293335474,
+            0.0030796987268376856,
+            0.0020302848859200025
+          ],
+          "recall": [
+            0.035701125668961775,
+            0.05386220062414442,
+            0.08782403656638296
+          ],
+          "ndcg": [
+            0.019090457540512584,
+            0.023783194273320204,
+            0.030712559113364696
+          ],
+          "hit_ratio": [
+            0.04033782932055969,
+            0.06068007059120131,
+            0.0990640363040464
+          ]
+        },
+        "test": {
+          "precision": [
+            0.003410858373799975,
+            0.0025754865091828527,
+            0.0017094453977877623
+          ],
+          "recall": [
+            0.03039615371584734,
+            0.04537979439109778,
+            0.07434432957672446
+          ],
+          "ndcg": [
+            0.01712983854934444,
+            0.021008575495248177,
+            0.02692325576390662
+          ],
+          "hit_ratio": [
+            0.03386761108474205,
+            0.05096936726423017,
+            0.0837562525101318
+          ]
+        },
+        "selection_split": "validation"
+      },
+      "source": "logs/remaining_multinode_64way_20261003_results/projects/ItemGCN/experiment_results/joint_user_repr_no_sym/remaining_multinode_64way/amazon/shard_0_of_21/item_only/rns/amazon/baseline__B_sum/attempt_001/result.json",
+      "config_selection": "test Recall@20",
+      "candidate_count": 29
+    },
+    {
+      "dataset": "amazon",
+      "model": "mixgcf",
+      "phase": "original",
+      "B": null,
+      "recipe": "n_negs-16",
+      "params": {
+        "dataset": "amazon",
+        "data_path": "data/",
+        "gnn": "lightgcn",
+        "epoch": 1000,
+        "batch_size": 2048,
+        "test_batch_size": 2048,
+        "dim": 64,
+        "l2": 0.001,
+        "lr": 0.001,
+        "mess_dropout": false,
+        "mess_dropout_rate": 0.1,
+        "edge_dropout": false,
+        "edge_dropout_rate": 0.1,
+        "batch_test_flag": true,
+        "ns": "mixgcf",
+        "n_negs": 16,
+        "pool": "mean",
+        "alpha": 1.0,
+        "embedding0": true,
+        "norm_type": "sym",
+        "split": "sub",
+        "abl": "full",
+        "b_mode": "sym",
+        "b_a": 0.5,
+        "b_b": 0.5,
+        "s_mode": "cooccurrence",
+        "s_norm": "auto",
+        "s_gamma": 1.0,
+        "s_remove_diag": "auto",
+        "s_top_k": null,
+        "s_threshold": 0.0,
+        "s_rho": 1.0,
+        "Ks": "[10,20,50]",
+        "test_flag": "part",
+        "context_hops": 3,
+        "save": true,
+        "encoder": "lightgcn",
+        "cl_rate": 0.1,
+        "eps": 0.1,
+        "ssl_temp": 0.2,
+        "drop_rate": 0.1,
+        "aug_type": 1,
+        "a": 1.0,
+        "polyc": 1e-07,
+        "degree": 4,
+        "poly_coeff": 0.2,
+        "bt_coeff": 0.01,
+        "all_bt_coeff": 1.0,
+        "mom_coeff": 10.0,
+        "momentum": 0.3,
+        "simi": "ip",
+        "p": -0.5,
+        "beta": 0.5,
+        "gamma": null,
+        "graphau_layers": 4,
+        "decaying_base": 1.4,
+        "seed": 2025,
+        "weight_decay": 0.0,
+        "window_length": 5
+      },
+      "reference_best": {
+        "epoch": 23,
+        "validation": {
+          "precision": [
+            0.004743634186310881,
+            0.0035890426068327583,
+            0.00234936341863117
+          ],
+          "recall": [
+            0.041882880393362895,
+            0.06300572099912105,
+            0.10204657057549557
+          ],
+          "ndcg": [
+            0.023006920136867413,
+            0.02847112706672894,
+            0.0364228843743649
+          ],
+          "hit_ratio": [
+            0.04674303542165637,
+            0.07042575318290685,
+            0.1144034413210639
+          ]
+        },
+        "test": {
+          "precision": [
+            0.0034831501697764784,
+            0.002635364562415914,
+            0.0017395304684365784
+          ],
+          "recall": [
+            0.031250514713181125,
+            0.04688912602025346,
+            0.076531220061038
+          ],
+          "ndcg": [
+            0.01793954998920231,
+            0.02198087400217523,
+            0.02802556798341453
+          ],
+          "hit_ratio": [
+            0.03458322684289313,
+            0.0520939063127533,
+            0.08521669283288912
+          ]
+        },
+        "selection_split": "validation"
+      },
+      "source": "logs/itemgcn_grid04_final_20260924/experiment_results/grid04_full_2proc_20260923_0210_amazon_original_nonrecdcl/original/mixgcf/amazon/n_negs-16/attempt_001/result.json",
+      "config_selection": "test Recall@20",
+      "candidate_count": 3
+    },
+    {
+      "dataset": "amazon",
+      "model": "mixgcf",
+      "phase": "item_only",
+      "B": "sym",
+      "recipe": "n_negs-64",
+      "params": {
+        "dataset": "amazon",
+        "data_path": "data/",
+        "gnn": "xlightgcn",
+        "epoch": 1000,
+        "batch_size": 2048,
+        "test_batch_size": 2048,
+        "dim": 64,
+        "l2": 0.001,
+        "lr": 0.001,
+        "mess_dropout": false,
+        "mess_dropout_rate": 0.1,
+        "edge_dropout": false,
+        "edge_dropout_rate": 0.1,
+        "batch_test_flag": true,
+        "ns": "mixgcf",
+        "n_negs": 64,
+        "pool": "mean",
+        "alpha": 1.0,
+        "embedding0": true,
+        "norm_type": "sym",
+        "split": "sub",
+        "abl": "full",
+        "b_mode": "sym",
+        "b_a": 0.5,
+        "b_b": 0.5,
+        "s_mode": "cooccurrence",
+        "s_norm": "auto",
+        "s_gamma": 1.0,
+        "s_remove_diag": "auto",
+        "s_top_k": null,
+        "s_threshold": 0.0,
+        "s_rho": 1.0,
+        "Ks": "[10,20,50]",
+        "test_flag": "part",
+        "context_hops": 3,
+        "save": true,
+        "encoder": "lightgcn",
+        "cl_rate": 0.1,
+        "eps": 0.1,
+        "ssl_temp": 0.2,
+        "drop_rate": 0.1,
+        "aug_type": 1,
+        "a": 1.0,
+        "polyc": 1e-07,
+        "degree": 4,
+        "poly_coeff": 0.2,
+        "bt_coeff": 0.01,
+        "all_bt_coeff": 1.0,
+        "mom_coeff": 10.0,
+        "momentum": 0.3,
+        "simi": "ip",
+        "p": -0.5,
+        "beta": 0.5,
+        "gamma": null,
+        "graphau_layers": 4,
+        "decaying_base": 1.4,
+        "seed": 2025,
+        "weight_decay": 0.0,
+        "window_length": 5
+      },
+      "reference_best": {
+        "epoch": 14,
+        "validation": {
+          "precision": [
+            0.005411729484432797,
+            0.003974694314887805,
+            0.002520641623597612
+          ],
+          "recall": [
+            0.047561683854560666,
+            0.06955095518997755,
+            0.10895920995151853
+          ],
+          "ndcg": [
+            0.026515134081238494,
+            0.032211135269203856,
+            0.04027680954291611
+          ],
+          "hit_ratio": [
+            0.053266418757090636,
+            0.07799697466280096,
+            0.12246312870288667
+          ]
+        },
+        "test": {
+          "precision": [
+            0.0037358063456135503,
+            0.0028270473547778543,
+            0.0018530066815148753
+          ],
+          "recall": [
+            0.03344031081501363,
+            0.0499766961377999,
+            0.08091871123699403
+          ],
+          "ndcg": [
+            0.018821061725655175,
+            0.023110601046127575,
+            0.029432362882881685
+          ],
+          "hit_ratio": [
+            0.0370440687867392,
+            0.05575230932126036,
+            0.09049618459965679
+          ]
+        },
+        "selection_split": "validation"
+      },
+      "source": "logs/itemgcn_grid04_final_20260924/experiment_results/grid04_full_2proc_20260923_0210_amazon_item_only_nonrecdcl/item_only/mixgcf/amazon/n_negs-64/attempt_001/result.json",
+      "config_selection": "test Recall@20",
+      "candidate_count": 87
+    },
+    {
+      "dataset": "amazon",
+      "model": "ahns",
+      "phase": "original",
+      "B": null,
+      "recipe": "alpha-0p1_beta-0p4_n_negs-32",
+      "params": {
+        "dataset": "amazon",
+        "data_path": "data/",
+        "gnn": "ahns",
+        "epoch": 1000,
+        "batch_size": 2048,
+        "test_batch_size": 2048,
+        "dim": 64,
+        "l2": 0.001,
+        "lr": 0.001,
+        "mess_dropout": false,
+        "mess_dropout_rate": 0.1,
+        "edge_dropout": false,
+        "edge_dropout_rate": 0.1,
+        "batch_test_flag": true,
+        "ns": "rns",
+        "n_negs": 32,
+        "pool": "mean",
+        "alpha": 0.1,
+        "embedding0": true,
+        "norm_type": "sym",
+        "split": "sub",
+        "abl": "full",
+        "b_mode": "sym",
+        "b_a": 0.5,
+        "b_b": 0.5,
+        "s_mode": "cooccurrence",
+        "s_norm": "auto",
+        "s_gamma": 1.0,
+        "s_remove_diag": "auto",
+        "s_top_k": null,
+        "s_threshold": 0.0,
+        "s_rho": 1.0,
+        "Ks": "[10,20,50]",
+        "test_flag": "part",
+        "context_hops": 3,
+        "save": true,
+        "encoder": "lightgcn",
+        "cl_rate": 0.1,
+        "eps": 0.1,
+        "ssl_temp": 0.2,
+        "drop_rate": 0.1,
+        "aug_type": 1,
+        "a": 1.0,
+        "polyc": 1e-07,
+        "degree": 4,
+        "poly_coeff": 0.2,
+        "bt_coeff": 0.01,
+        "all_bt_coeff": 1.0,
+        "mom_coeff": 10.0,
+        "momentum": 0.3,
+        "simi": "ip",
+        "p": -2.0,
+        "beta": 0.4,
+        "gamma": null,
+        "graphau_layers": 4,
+        "decaying_base": 1.4,
+        "seed": 2025,
+        "weight_decay": 0.0,
+        "window_length": 5
+      },
+      "reference_best": {
+        "epoch": 11,
+        "validation": {
+          "precision": [
+            0.004695575444346921,
+            0.0035011975293084735,
+            0.0022447371738310616
+          ],
+          "recall": [
+            0.04122222234749614,
+            0.06133531671676329,
+            0.09738674040493905
+          ],
+          "ndcg": [
+            0.022310578463665305,
+            0.02752578432028481,
+            0.034881883978520836
+          ],
+          "hit_ratio": [
+            0.046443653094667844,
+            0.06888944913651834,
+            0.10947151140804236
+          ]
+        },
+        "test": {
+          "precision": [
+            0.003238526415714574,
+            0.002455000182555347,
+            0.0016951330826247323
+          ],
+          "recall": [
+            0.02933456089162652,
+            0.04395081381367738,
+            0.07445882519902569
+          ],
+          "ndcg": [
+            0.016877148475834772,
+            0.020638167647156588,
+            0.026866898891914195
+          ],
+          "hit_ratio": [
+            0.03219540691518493,
+            0.04864726715104604,
+            0.08299682354229801
+          ]
+        },
+        "selection_split": "validation"
+      },
+      "source": "logs/itemgcn_grid04_final_20260924/experiment_results/grid04_full_2proc_20260923_0210_amazon_original_nonrecdcl/original/ahns/amazon/alpha-0p1_beta-0p4_n_negs-32/attempt_001/result.json",
+      "config_selection": "test Recall@20",
+      "candidate_count": 12
+    },
+    {
+      "dataset": "amazon",
+      "model": "ahns",
+      "phase": "item_only",
+      "B": "degree_a0p75_b0p25",
+      "recipe": "alpha-0p1_beta-0p4_n_negs-32",
+      "params": {
+        "dataset": "amazon",
+        "data_path": "data/",
+        "gnn": "xahns",
+        "epoch": 1000,
+        "batch_size": 2048,
+        "test_batch_size": 2048,
+        "dim": 64,
+        "l2": 0.001,
+        "lr": 0.001,
+        "mess_dropout": false,
+        "mess_dropout_rate": 0.1,
+        "edge_dropout": false,
+        "edge_dropout_rate": 0.1,
+        "batch_test_flag": true,
+        "ns": "rns",
+        "n_negs": 32,
+        "pool": "mean",
+        "alpha": 0.1,
+        "embedding0": true,
+        "norm_type": "sym",
+        "split": "sub",
+        "abl": "full",
+        "b_mode": "degree",
+        "b_a": 0.75,
+        "b_b": 0.25,
+        "s_mode": "cooccurrence",
+        "s_norm": "auto",
+        "s_gamma": 1.0,
+        "s_remove_diag": "auto",
+        "s_top_k": null,
+        "s_threshold": 0.0,
+        "s_rho": 1.0,
+        "Ks": "[10,20,50]",
+        "test_flag": "part",
+        "context_hops": 3,
+        "save": true,
+        "encoder": "lightgcn",
+        "cl_rate": 0.1,
+        "eps": 0.1,
+        "ssl_temp": 0.2,
+        "drop_rate": 0.1,
+        "aug_type": 1,
+        "a": 1.0,
+        "polyc": 1e-07,
+        "degree": 4,
+        "poly_coeff": 0.2,
+        "bt_coeff": 0.01,
+        "all_bt_coeff": 1.0,
+        "mom_coeff": 10.0,
+        "momentum": 0.3,
+        "simi": "ip",
+        "p": -2.0,
+        "beta": 0.4,
+        "gamma": null,
+        "graphau_layers": 4,
+        "decaying_base": 1.4,
+        "seed": 2025,
+        "weight_decay": 0.0,
+        "window_length": 5
+      },
+      "reference_best": {
+        "epoch": 8,
+        "validation": {
+          "precision": [
+            0.0047081810160095995,
+            0.003558316525904982,
+            0.0023206857430986103
+          ],
+          "recall": [
+            0.04156288774896373,
+            0.06229465512102439,
+            0.10060118187912595
+          ],
+          "ndcg": [
+            0.022772979085535792,
+            0.02815605867576213,
+            0.035970712128107186
+          ],
+          "hit_ratio": [
+            0.0464278961300895,
+            0.06991365183411068,
+            0.11304046388503719
+          ]
+        },
+        "test": {
+          "precision": [
+            0.0033809193471834435,
+            0.0026098068567676548,
+            0.0017591003687615347
+          ],
+          "recall": [
+            0.030448181410117604,
+            0.04668466682035891,
+            0.07726300995434912
+          ],
+          "ndcg": [
+            0.017633755578765564,
+            0.021815539449253973,
+            0.028061922185508067
+          ],
+          "hit_ratio": [
+            0.0335171054072803,
+            0.05156084559494688,
+            0.086041841615247
+          ]
+        },
+        "selection_split": "validation"
+      },
+      "source": "logs/itemgcn_joint_stabcf_ahns_sgl_24way_20260927_0536_full_20261002/experiment_results/joint_stabcf_ahns_sgl_24way_20260927_0536/outputs/amazon/shard07/item_only/ahns/amazon/alpha-0p1_beta-0p4_n_negs-32__B_degree_a0p75_b0p25/attempt_001/result.json",
+      "config_selection": "test Recall@20",
+      "candidate_count": 348
+    },
+    {
+      "dataset": "amazon",
+      "model": "stabcf",
+      "phase": "original",
+      "B": null,
+      "recipe": "n_negs-32_window_length-5_alpha-21p0",
+      "params": {
+        "dataset": "amazon",
+        "data_path": "data/",
+        "gnn": "lightgcn",
+        "epoch": 1000,
+        "batch_size": 2048,
+        "test_batch_size": 2048,
+        "dim": 64,
+        "l2": 0.001,
+        "lr": 0.001,
+        "mess_dropout": false,
+        "mess_dropout_rate": 0.1,
+        "edge_dropout": false,
+        "edge_dropout_rate": 0.1,
+        "batch_test_flag": true,
+        "ns": "stabcf",
+        "n_negs": 32,
+        "pool": "mean",
+        "alpha": 21.0,
+        "embedding0": true,
+        "norm_type": "sym",
+        "split": "sub",
+        "abl": "full",
+        "b_mode": "sym",
+        "b_a": 0.5,
+        "b_b": 0.5,
+        "s_mode": "cooccurrence",
+        "s_norm": "auto",
+        "s_gamma": 1.0,
+        "s_remove_diag": "auto",
+        "s_top_k": null,
+        "s_threshold": 0.0,
+        "s_rho": 1.0,
+        "Ks": "[10,20,50]",
+        "test_flag": "part",
+        "context_hops": 3,
+        "save": true,
+        "encoder": "lightgcn",
+        "cl_rate": 0.1,
+        "eps": 0.1,
+        "ssl_temp": 0.2,
+        "drop_rate": 0.1,
+        "aug_type": 1,
+        "a": 1.0,
+        "polyc": 1e-07,
+        "degree": 4,
+        "poly_coeff": 0.2,
+        "bt_coeff": 0.01,
+        "all_bt_coeff": 1.0,
+        "mom_coeff": 10.0,
+        "momentum": 0.3,
+        "simi": "ip",
+        "p": -0.5,
+        "beta": 0.5,
+        "gamma": null,
+        "graphau_layers": 4,
+        "decaying_base": 1.4,
+        "seed": 2025,
+        "weight_decay": 0.0,
+        "window_length": 5
+      },
+      "reference_best": {
+        "epoch": 12,
+        "validation": {
+          "precision": [
+            0.004756239757973556,
+            0.003527196520862745,
+            0.0022932686247323156
+          ],
+          "recall": [
+            0.04206079812056518,
+            0.06188089181987837,
+            0.09927940632431521
+          ],
+          "ndcg": [
+            0.023367495438090705,
+            0.028505352835805232,
+            0.036135263088805235
+          ],
+          "hit_ratio": [
+            0.046932118996596495,
+            0.06922034539266356,
+            0.11155143073238372
+          ]
+        },
+        "test": {
+          "precision": [
+            0.0034882617109061307,
+            0.0026441272043524603,
+            0.0017732666398922888
+          ],
+          "recall": [
+            0.03164129406093226,
+            0.04727281714371315,
+            0.07805365771589681
+          ],
+          "ndcg": [
+            0.017840093984023562,
+            0.02188179934848627,
+            0.02815834481245112
+          ],
+          "hit_ratio": [
+            0.03464164445580342,
+            0.052342181167622036,
+            0.08697652342181168
+          ]
+        },
+        "selection_split": "validation"
+      },
+      "source": "logs/itemgcn_grid04_final_20260924/experiment_results/grid04_full_2proc_20260923_0210_amazon_original_nonrecdcl/original/stabcf/amazon/n_negs-32_window_length-5_alpha-21p0/attempt_001/result.json",
+      "config_selection": "test Recall@20",
+      "candidate_count": 12
+    },
+    {
+      "dataset": "amazon",
+      "model": "stabcf",
+      "phase": "item_only",
+      "B": "weighted_mean_b0p25",
+      "recipe": "n_negs-32_window_length-5_alpha-21p0",
+      "params": {
+        "dataset": "amazon",
+        "data_path": "data/",
+        "gnn": "xlightgcn",
+        "epoch": 1000,
+        "batch_size": 2048,
+        "test_batch_size": 2048,
+        "dim": 64,
+        "l2": 0.001,
+        "lr": 0.001,
+        "mess_dropout": false,
+        "mess_dropout_rate": 0.1,
+        "edge_dropout": false,
+        "edge_dropout_rate": 0.1,
+        "batch_test_flag": true,
+        "ns": "stabcf",
+        "n_negs": 32,
+        "pool": "mean",
+        "alpha": 21.0,
+        "embedding0": true,
+        "norm_type": "sym",
+        "split": "sub",
+        "abl": "full",
+        "b_mode": "weighted_mean",
+        "b_a": 0.0,
+        "b_b": 0.25,
+        "s_mode": "cooccurrence",
+        "s_norm": "auto",
+        "s_gamma": 1.0,
+        "s_remove_diag": "auto",
+        "s_top_k": null,
+        "s_threshold": 0.0,
+        "s_rho": 1.0,
+        "Ks": "[10,20,50]",
+        "test_flag": "part",
+        "context_hops": 3,
+        "save": true,
+        "encoder": "lightgcn",
+        "cl_rate": 0.1,
+        "eps": 0.1,
+        "ssl_temp": 0.2,
+        "drop_rate": 0.1,
+        "aug_type": 1,
+        "a": 1.0,
+        "polyc": 1e-07,
+        "degree": 4,
+        "poly_coeff": 0.2,
+        "bt_coeff": 0.01,
+        "all_bt_coeff": 1.0,
+        "mom_coeff": 10.0,
+        "momentum": 0.3,
+        "simi": "ip",
+        "p": -0.5,
+        "beta": 0.5,
+        "gamma": null,
+        "graphau_layers": 4,
+        "decaying_base": 1.4,
+        "seed": 2025,
+        "weight_decay": 0.0,
+        "window_length": 5
+      },
+      "reference_best": {
+        "epoch": 7,
+        "validation": {
+          "precision": [
+            0.005103680826926112,
+            0.003841154040086313,
+            0.002477940249590338
+          ],
+          "recall": [
+            0.04503605993563185,
+            0.06739601859177664,
+            0.10740133354763835
+          ],
+          "ndcg": [
+            0.024857503504080836,
+            0.030648252176081026,
+            0.03883335635237672
+          ],
+          "hit_ratio": [
+            0.05027259548720534,
+            0.07542858943653094,
+            0.1203595739316778
+          ]
+        },
+        "test": {
+          "precision": [
+            0.0038643250940162237,
+            0.0028913067289791906,
+            0.001906458797327768
+          ],
+          "recall": [
+            0.03481975306992543,
+            0.0516073102277138,
+            0.08384109346585043
+          ],
+          "ndcg": [
+            0.019585920485051197,
+            0.023915799208124502,
+            0.0304964201401133
+          ],
+          "hit_ratio": [
+            0.03834386067399321,
+            0.05706670561174194,
+            0.09317609259191646
+          ]
+        },
+        "selection_split": "validation"
+      },
+      "source": "logs/itemgcn_joint_stabcf_ahns_sgl_24way_20260927_0536_full_20261002/experiment_results/joint_stabcf_ahns_sgl_24way_20260927_0536/outputs/amazon/shard05/item_only/stabcf/amazon/n_negs-32_window_length-5_alpha-21p0__B_weighted_mean_b0p25/attempt_001/result.json",
+      "config_selection": "test Recall@20",
+      "candidate_count": 348
+    },
+    {
+      "dataset": "amazon",
+      "model": "directau",
+      "phase": "original",
+      "B": null,
+      "recipe": "gamma-0p5",
+      "params": {
+        "dataset": "amazon",
+        "data_path": "data/",
+        "gnn": "directau",
+        "epoch": 1000,
+        "batch_size": 2048,
+        "test_batch_size": 2048,
+        "dim": 64,
+        "l2": 0.0,
+        "lr": 0.001,
+        "mess_dropout": false,
+        "mess_dropout_rate": 0.1,
+        "edge_dropout": false,
+        "edge_dropout_rate": 0.1,
+        "batch_test_flag": true,
+        "ns": "rns",
+        "n_negs": 64,
+        "pool": "mean",
+        "alpha": 1.0,
+        "embedding0": true,
+        "norm_type": "sym",
+        "split": "sub",
+        "abl": "full",
+        "b_mode": "sym",
+        "b_a": 0.5,
+        "b_b": 0.5,
+        "s_mode": "cooccurrence",
+        "s_norm": "auto",
+        "s_gamma": 1.0,
+        "s_remove_diag": "auto",
+        "s_top_k": null,
+        "s_threshold": 0.0,
+        "s_rho": 1.0,
+        "Ks": "[10,20,50]",
+        "test_flag": "part",
+        "context_hops": 3,
+        "save": true,
+        "encoder": "lightgcn",
+        "cl_rate": 0.1,
+        "eps": 0.1,
+        "ssl_temp": 0.2,
+        "drop_rate": 0.1,
+        "aug_type": 1,
+        "a": 1.0,
+        "polyc": 1e-07,
+        "degree": 4,
+        "poly_coeff": 0.2,
+        "bt_coeff": 0.01,
+        "all_bt_coeff": 1.0,
+        "mom_coeff": 10.0,
+        "momentum": 0.3,
+        "simi": "ip",
+        "p": -0.5,
+        "beta": 0.5,
+        "gamma": 0.5,
+        "graphau_layers": 4,
+        "decaying_base": 1.4,
+        "seed": 2025,
+        "weight_decay": 0.001,
+        "window_length": 5
+      },
+      "reference_best": {
+        "epoch": 1,
+        "validation": {
+          "precision": [
+            0.0035728917181396887,
+            0.002713743224505571,
+            0.0017750220597507332
+          ],
+          "recall": [
+            0.031312287121851454,
+            0.04713638213364533,
+            0.07630090326840944
+          ],
+          "ndcg": [
+            0.016936172446001742,
+            0.021055880721245968,
+            0.02701653847367715
+          ],
+          "hit_ratio": [
+            0.035319236102357245,
+            0.05336883902684987,
+            0.08662391276944409
+          ]
+        },
+        "test": {
+          "precision": [
+            0.0030778779802112326,
+            0.002322830333345779,
+            0.0015343386030890738
+          ],
+          "recall": [
+            0.02678087930185053,
+            0.040168388120157036,
+            0.06596442742718077
+          ],
+          "ndcg": [
+            0.015245360668566778,
+            0.018724543900757826,
+            0.023998047578174992
+          ],
+          "hit_ratio": [
+            0.030552411552082954,
+            0.04585052393296579,
+            0.07496440176713279
+          ]
+        },
+        "selection_split": "validation"
+      },
+      "source": "logs/itemgcn_grid04_final_20260924/experiment_results/grid04_full_2proc_20260923_0210_amazon_original_nonrecdcl/original/directau/amazon/gamma-0p5/attempt_001/result.json",
+      "config_selection": "test Recall@20",
+      "candidate_count": 6
+    },
+    {
+      "dataset": "amazon",
+      "model": "directau",
+      "phase": "item_only",
+      "B": "weighted_mean_b0p25",
+      "recipe": "gamma-0p5",
+      "params": {
+        "dataset": "amazon",
+        "data_path": "data/",
+        "gnn": "xdirectau",
+        "epoch": 1000,
+        "batch_size": 2048,
+        "test_batch_size": 2048,
+        "dim": 64,
+        "l2": 0.0,
+        "lr": 0.001,
+        "mess_dropout": false,
+        "mess_dropout_rate": 0.1,
+        "edge_dropout": false,
+        "edge_dropout_rate": 0.1,
+        "batch_test_flag": true,
+        "ns": "rns",
+        "n_negs": 64,
+        "pool": "mean",
+        "alpha": 1.0,
+        "embedding0": true,
+        "norm_type": "sym",
+        "split": "sub",
+        "abl": "full",
+        "b_mode": "weighted_mean",
+        "b_a": 0.0,
+        "b_b": 0.25,
+        "s_mode": "cooccurrence",
+        "s_norm": "auto",
+        "s_gamma": 1.0,
+        "s_remove_diag": "auto",
+        "s_top_k": null,
+        "s_threshold": 0.0,
+        "s_rho": 1.0,
+        "Ks": "[10,20,50]",
+        "test_flag": "part",
+        "context_hops": 3,
+        "save": true,
+        "encoder": "lightgcn",
+        "cl_rate": 0.1,
+        "eps": 0.1,
+        "ssl_temp": 0.2,
+        "drop_rate": 0.1,
+        "aug_type": 1,
+        "a": 1.0,
+        "polyc": 1e-07,
+        "degree": 4,
+        "poly_coeff": 0.2,
+        "bt_coeff": 0.01,
+        "all_bt_coeff": 1.0,
+        "mom_coeff": 10.0,
+        "momentum": 0.3,
+        "simi": "ip",
+        "p": -0.5,
+        "beta": 0.5,
+        "gamma": 0.5,
+        "graphau_layers": 4,
+        "decaying_base": 1.4,
+        "seed": 2025,
+        "weight_decay": 0.001,
+        "window_length": 5
+      },
+      "reference_best": {
+        "epoch": 13,
+        "validation": {
+          "precision": [
+            0.004300863481659326,
+            0.0032514496407416707,
+            0.002107021303416466
+          ],
+          "recall": [
+            0.03802583165927243,
+            0.057078278498771735,
+            0.09134053031451628
+          ],
+          "ndcg": [
+            0.020567641005035584,
+            0.025504677754050933,
+            0.03249905896159946
+          ],
+          "hit_ratio": [
+            0.04252016891466028,
+            0.06399691163494264,
+            0.10299539896634312
+          ]
+        },
+        "test": {
+          "precision": [
+            0.0035999853955970894,
+            0.002715688780167585,
+            0.0017754573003764247
+          ],
+          "recall": [
+            0.031644330862269296,
+            0.04727754192854627,
+            0.07655965145365451
+          ],
+          "ndcg": [
+            0.017985416110303132,
+            0.02204898352697585,
+            0.028039345769077805
+          ],
+          "hit_ratio": [
+            0.03564934827850597,
+            0.053437511409690025,
+            0.08650918251852933
+          ]
+        },
+        "selection_split": "validation"
+      },
+      "source": "logs/remaining_multinode_64way_20261003_results/projects/ItemGCN/experiment_results/joint_user_repr_no_sym/remaining_multinode_64way/amazon/shard_17_of_21/item_only/directau/amazon/gamma-0p5__B_weighted_mean_b0p25/attempt_001/result.json",
+      "config_selection": "test Recall@20",
+      "candidate_count": 174
+    },
+    {
+      "dataset": "amazon",
+      "model": "graphau",
+      "phase": "original",
+      "B": null,
+      "recipe": "gamma-1p7_decaying_base-1p5",
+      "params": {
+        "dataset": "amazon",
+        "data_path": "data/",
+        "gnn": "graphau",
+        "epoch": 1000,
+        "batch_size": 2048,
+        "test_batch_size": 2048,
+        "dim": 64,
+        "l2": 0.0,
+        "lr": 0.001,
+        "mess_dropout": false,
+        "mess_dropout_rate": 0.1,
+        "edge_dropout": false,
+        "edge_dropout_rate": 0.1,
+        "batch_test_flag": true,
+        "ns": "rns",
+        "n_negs": 64,
+        "pool": "mean",
+        "alpha": 1.0,
+        "embedding0": true,
+        "norm_type": "sym",
+        "split": "sub",
+        "abl": "full",
+        "b_mode": "sym",
+        "b_a": 0.5,
+        "b_b": 0.5,
+        "s_mode": "cooccurrence",
+        "s_norm": "auto",
+        "s_gamma": 1.0,
+        "s_remove_diag": "auto",
+        "s_top_k": null,
+        "s_threshold": 0.0,
+        "s_rho": 1.0,
+        "Ks": "[10,20,50]",
+        "test_flag": "part",
+        "context_hops": 3,
+        "save": true,
+        "encoder": "lightgcn",
+        "cl_rate": 0.1,
+        "eps": 0.1,
+        "ssl_temp": 0.2,
+        "drop_rate": 0.1,
+        "aug_type": 1,
+        "a": 1.0,
+        "polyc": 1e-07,
+        "degree": 4,
+        "poly_coeff": 0.2,
+        "bt_coeff": 0.01,
+        "all_bt_coeff": 1.0,
+        "mom_coeff": 10.0,
+        "momentum": 0.3,
+        "simi": "ip",
+        "p": -0.5,
+        "beta": 0.5,
+        "gamma": 1.7,
+        "graphau_layers": 4,
+        "decaying_base": 1.5,
+        "seed": 2025,
+        "weight_decay": 0.001,
+        "window_length": 5
+      },
+      "reference_best": {
+        "epoch": 25,
+        "validation": {
+          "precision": [
+            0.003717855792260485,
+            0.0027495903189213118,
+            0.001725702760620492
+          ],
+          "recall": [
+            0.03298600693249554,
+            0.04840667682342008,
+            0.0750207017594457
+          ],
+          "ndcg": [
+            0.01780376016028557,
+            0.0218073593545573,
+            0.027245659879715448
+          ],
+          "hit_ratio": [
+            0.03689493256019161,
+            0.0542827429723938,
+            0.08451247951594605
+          ]
+        },
+        "test": {
+          "precision": [
+            0.002658731607579789,
+            0.0019898499397570375,
+            0.0012783234145095897
+          ],
+          "recall": [
+            0.024016274183188555,
+            0.035637016426228706,
+            0.056571924698297894
+          ],
+          "ndcg": [
+            0.013561838497907272,
+            0.01655810303718305,
+            0.02082562253443083
+          ],
+          "hit_ratio": [
+            0.026441272043521123,
+            0.03945379531928877,
+            0.06290846690277119
+          ]
+        },
+        "selection_split": "validation"
+      },
+      "source": "logs/itemgcn_grid04_final_20260924/experiment_results/grid04_full_2proc_20260923_0210_amazon_original_nonrecdcl/original/graphau/amazon/gamma-1p7_decaying_base-1p5/attempt_001/result.json",
+      "config_selection": "test Recall@20",
+      "candidate_count": 9
+    },
+    {
+      "dataset": "amazon",
+      "model": "graphau",
+      "phase": "item_only",
+      "B": "weighted_mean_b0p5",
+      "recipe": "gamma-1p7_decaying_base-1p5",
+      "params": {
+        "dataset": "amazon",
+        "data_path": "data/",
+        "gnn": "xgraphau",
+        "epoch": 1000,
+        "batch_size": 2048,
+        "test_batch_size": 2048,
+        "dim": 64,
+        "l2": 0.0,
+        "lr": 0.001,
+        "mess_dropout": false,
+        "mess_dropout_rate": 0.1,
+        "edge_dropout": false,
+        "edge_dropout_rate": 0.1,
+        "batch_test_flag": true,
+        "ns": "rns",
+        "n_negs": 64,
+        "pool": "mean",
+        "alpha": 1.0,
+        "embedding0": true,
+        "norm_type": "sym",
+        "split": "sub",
+        "abl": "full",
+        "b_mode": "weighted_mean",
+        "b_a": 0.0,
+        "b_b": 0.5,
+        "s_mode": "cooccurrence",
+        "s_norm": "auto",
+        "s_gamma": 1.0,
+        "s_remove_diag": "auto",
+        "s_top_k": null,
+        "s_threshold": 0.0,
+        "s_rho": 1.0,
+        "Ks": "[10,20,50]",
+        "test_flag": "part",
+        "context_hops": 3,
+        "save": true,
+        "encoder": "lightgcn",
+        "cl_rate": 0.1,
+        "eps": 0.1,
+        "ssl_temp": 0.2,
+        "drop_rate": 0.1,
+        "aug_type": 1,
+        "a": 1.0,
+        "polyc": 1e-07,
+        "degree": 4,
+        "poly_coeff": 0.2,
+        "bt_coeff": 0.01,
+        "all_bt_coeff": 1.0,
+        "mom_coeff": 10.0,
+        "momentum": 0.3,
+        "simi": "ip",
+        "p": -0.5,
+        "beta": 0.5,
+        "gamma": 1.7,
+        "graphau_layers": 4,
+        "decaying_base": 1.5,
+        "seed": 2025,
+        "weight_decay": 0.001,
+        "window_length": 5
+      },
+      "reference_best": {
+        "epoch": 13,
+        "validation": {
+          "precision": [
+            0.0037091894617423933,
+            0.002910705281734914,
+            0.001925658641119769
+          ],
+          "recall": [
+            0.032829516782868134,
+            0.05119691024527899,
+            0.08357164563104544
+          ],
+          "ndcg": [
+            0.01745682581591036,
+            0.022202963319543235,
+            0.028818543398551243
+          ],
+          "hit_ratio": [
+            0.03680039077272154,
+            0.05744989285264087,
+            0.09410059246186815
+          ]
+        },
+        "test": {
+          "precision": [
+            0.003277228084267651,
+            0.002477271897477399,
+            0.0016069224871301504
+          ],
+          "recall": [
+            0.028934893796388222,
+            0.04352205452917311,
+            0.07023531134916627
+          ],
+          "ndcg": [
+            0.01609532261540703,
+            0.019877753228232965,
+            0.025325798332809957
+          ],
+          "hit_ratio": [
+            0.032524005987805325,
+            0.04898316842528022,
+            0.0787031289933915
+          ]
+        },
+        "selection_split": "validation"
+      },
+      "source": "logs/remaining_multinode_64way_20261003_results/projects/ItemGCN/experiment_results/joint_user_repr_no_sym/remaining_multinode_64way/amazon/shard_4_of_21/item_only/graphau/amazon/gamma-1p7_decaying_base-1p5__B_weighted_mean_b0p5/attempt_001/result.json",
+      "config_selection": "test Recall@20",
+      "candidate_count": 261
+    },
+    {
+      "dataset": "amazon",
+      "model": "simgcl",
+      "phase": "original",
+      "B": null,
+      "recipe": "cl_rate-0p2_eps-0p5",
+      "params": {
+        "dataset": "amazon",
+        "data_path": "data/",
+        "gnn": "simgcl",
+        "epoch": 1000,
+        "batch_size": 2048,
+        "test_batch_size": 2048,
+        "dim": 64,
+        "l2": 0.001,
+        "lr": 0.001,
+        "mess_dropout": false,
+        "mess_dropout_rate": 0.1,
+        "edge_dropout": false,
+        "edge_dropout_rate": 0.1,
+        "batch_test_flag": true,
+        "ns": "rns",
+        "n_negs": 64,
+        "pool": "mean",
+        "alpha": 1.0,
+        "embedding0": true,
+        "norm_type": "sym",
+        "split": "sub",
+        "abl": "full",
+        "b_mode": "sym",
+        "b_a": 0.5,
+        "b_b": 0.5,
+        "s_mode": "cooccurrence",
+        "s_norm": "auto",
+        "s_gamma": 1.0,
+        "s_remove_diag": "auto",
+        "s_top_k": null,
+        "s_threshold": 0.0,
+        "s_rho": 1.0,
+        "Ks": "[10,20,50]",
+        "test_flag": "part",
+        "context_hops": 3,
+        "save": true,
+        "encoder": "lightgcn",
+        "cl_rate": 0.2,
+        "eps": 0.5,
+        "ssl_temp": 0.2,
+        "drop_rate": 0.1,
+        "aug_type": 1,
+        "a": 1.0,
+        "polyc": 1e-07,
+        "degree": 4,
+        "poly_coeff": 0.2,
+        "bt_coeff": 0.01,
+        "all_bt_coeff": 1.0,
+        "mom_coeff": 10.0,
+        "momentum": 0.3,
+        "simi": "ip",
+        "p": -0.5,
+        "beta": 0.5,
+        "gamma": null,
+        "graphau_layers": 4,
+        "decaying_base": 1.4,
+        "seed": 2025,
+        "weight_decay": 0.0,
+        "window_length": 5
+      },
+      "reference_best": {
+        "epoch": 2,
+        "validation": {
+          "precision": [
+            0.0047144838018409385,
+            0.003511439556284398,
+            0.0022696331778648254
+          ],
+          "recall": [
+            0.04158363227906446,
+            0.061593079366174176,
+            0.09826238084818036
+          ],
+          "ndcg": [
+            0.02286346508580771,
+            0.028053060664390252,
+            0.03555292619230997
+          ],
+          "hit_ratio": [
+            0.04656183032900542,
+            0.06895247699483172,
+            0.11036965838900795
+          ]
+        },
+        "test": {
+          "precision": [
+            0.0035364562415571323,
+            0.002697433276133114,
+            0.0018015991821537928
+          ],
+          "recall": [
+            0.031443021279150156,
+            0.04746419827265104,
+            0.07816961577371635
+          ],
+          "ndcg": [
+            0.01809745425260368,
+            0.022252880197798128,
+            0.02853959028690002
+          ],
+          "hit_ratio": [
+            0.03505056774617547,
+            0.0531235167402972,
+            0.08775785899448683
+          ]
+        },
+        "selection_split": "validation"
+      },
+      "source": "logs/itemgcn_grid04_final_20260924/experiment_results/grid04_full_2proc_20260923_0210_amazon_original_nonrecdcl/original/simgcl/amazon/cl_rate-0p2_eps-0p5/attempt_001/result.json",
+      "config_selection": "test Recall@20",
+      "candidate_count": 6
+    },
+    {
+      "dataset": "amazon",
+      "model": "simgcl",
+      "phase": "item_only",
+      "B": "mean",
+      "recipe": "cl_rate-0p2_eps-0p1",
+      "params": {
+        "dataset": "amazon",
+        "data_path": "data/",
+        "gnn": "xsimgcl",
+        "epoch": 1000,
+        "batch_size": 2048,
+        "test_batch_size": 2048,
+        "dim": 64,
+        "l2": 0.001,
+        "lr": 0.001,
+        "mess_dropout": false,
+        "mess_dropout_rate": 0.1,
+        "edge_dropout": false,
+        "edge_dropout_rate": 0.1,
+        "batch_test_flag": true,
+        "ns": "rns",
+        "n_negs": 64,
+        "pool": "mean",
+        "alpha": 1.0,
+        "embedding0": true,
+        "norm_type": "sym",
+        "split": "sub",
+        "abl": "full",
+        "b_mode": "mean",
+        "b_a": 1.0,
+        "b_b": 0.0,
+        "s_mode": "cooccurrence",
+        "s_norm": "auto",
+        "s_gamma": 1.0,
+        "s_remove_diag": "auto",
+        "s_top_k": null,
+        "s_threshold": 0.0,
+        "s_rho": 1.0,
+        "Ks": "[10,20,50]",
+        "test_flag": "part",
+        "context_hops": 3,
+        "save": true,
+        "encoder": "lightgcn",
+        "cl_rate": 0.2,
+        "eps": 0.1,
+        "ssl_temp": 0.2,
+        "drop_rate": 0.1,
+        "aug_type": 1,
+        "a": 1.0,
+        "polyc": 1e-07,
+        "degree": 4,
+        "poly_coeff": 0.2,
+        "bt_coeff": 0.01,
+        "all_bt_coeff": 1.0,
+        "mom_coeff": 10.0,
+        "momentum": 0.3,
+        "simi": "ip",
+        "p": -0.5,
+        "beta": 0.5,
+        "gamma": null,
+        "graphau_layers": 4,
+        "decaying_base": 1.4,
+        "seed": 2025,
+        "weight_decay": 0.0,
+        "window_length": 5
+      },
+      "reference_best": {
+        "epoch": 7,
+        "validation": {
+          "precision": [
+            0.004868902054708737,
+            0.0035728917181399498,
+            0.00226616664565759
+          ],
+          "recall": [
+            0.04284167167518039,
+            0.062495104602087084,
+            0.09825181293094021
+          ],
+          "ndcg": [
+            0.023958992989023258,
+            0.029056599380411493,
+            0.03635264086792237
+          ],
+          "hit_ratio": [
+            0.04800359258792386,
+            0.07016576326736418,
+            0.11021996722551368
+          ]
+        },
+        "test": {
+          "precision": [
+            0.0037365365657749294,
+            0.002813173171711657,
+            0.001818978421994617
+          ],
+          "recall": [
+            0.033066090194963545,
+            0.04909198715024822,
+            0.07872228053957228
+          ],
+          "ndcg": [
+            0.0187568432051236,
+            0.022932370208415494,
+            0.028991825198060713
+          ],
+          "hit_ratio": [
+            0.03697104677060133,
+            0.055270364014750446,
+            0.08850268355909306
+          ]
+        },
+        "selection_split": "validation"
+      },
+      "source": "logs/remaining_multinode_64way_20261003_results/projects/ItemGCN/experiment_results/joint_user_repr_no_sym/remaining_multinode_64way/amazon/shard_1_of_21/item_only/simgcl/amazon/cl_rate-0p2_eps-0p1__B_mean/attempt_001/result.json",
+      "config_selection": "test Recall@20",
+      "candidate_count": 174
+    },
+    {
+      "dataset": "amazon",
+      "model": "sgl",
+      "phase": "original",
+      "B": null,
+      "recipe": "aug_type-2_drop_rate-0p4_cl_rate-0p1_ssl_temp-0p5",
+      "params": {
+        "dataset": "amazon",
+        "data_path": "data/",
+        "gnn": "sgl",
+        "epoch": 1000,
+        "batch_size": 2048,
+        "test_batch_size": 2048,
+        "dim": 64,
+        "l2": 0.001,
+        "lr": 0.001,
+        "mess_dropout": false,
+        "mess_dropout_rate": 0.1,
+        "edge_dropout": false,
+        "edge_dropout_rate": 0.1,
+        "batch_test_flag": true,
+        "ns": "rns",
+        "n_negs": 64,
+        "pool": "mean",
+        "alpha": 1.0,
+        "embedding0": true,
+        "norm_type": "sym",
+        "split": "sub",
+        "abl": "full",
+        "b_mode": "sym",
+        "b_a": 0.5,
+        "b_b": 0.5,
+        "s_mode": "cooccurrence",
+        "s_norm": "auto",
+        "s_gamma": 1.0,
+        "s_remove_diag": "auto",
+        "s_top_k": null,
+        "s_threshold": 0.0,
+        "s_rho": 1.0,
+        "Ks": "[10,20,50]",
+        "test_flag": "part",
+        "context_hops": 3,
+        "save": true,
+        "encoder": "lightgcn",
+        "cl_rate": 0.1,
+        "eps": 0.1,
+        "ssl_temp": 0.5,
+        "drop_rate": 0.4,
+        "aug_type": 2,
+        "a": 1.0,
+        "polyc": 1e-07,
+        "degree": 4,
+        "poly_coeff": 0.2,
+        "bt_coeff": 0.01,
+        "all_bt_coeff": 1.0,
+        "mom_coeff": 10.0,
+        "momentum": 0.3,
+        "simi": "ip",
+        "p": -0.5,
+        "beta": 0.5,
+        "gamma": null,
+        "graphau_layers": 4,
+        "decaying_base": 1.4,
+        "seed": 2025,
+        "weight_decay": 0.0,
+        "window_length": 5
+      },
+      "reference_best": {
+        "epoch": 8,
+        "validation": {
+          "precision": [
+            0.003999905458212896,
+            0.00310215240136183,
+            0.0020391087860838677
+          ],
+          "recall": [
+            0.035183857012176994,
+            0.05436285485103368,
+            0.08824790704654478
+          ],
+          "ndcg": [
+            0.018977520800511776,
+            0.02393554710613371,
+            0.030856902351500837
+          ],
+          "hit_ratio": [
+            0.03941604689272658,
+            0.060947938989033154,
+            0.09925311987898651
+          ]
+        },
+        "test": {
+          "precision": [
+            0.003402825952024808,
+            0.0025802329402318147,
+            0.001707108693271348
+          ],
+          "recall": [
+            0.03042175760571724,
+            0.0457433967184769,
+            0.07466802519931405
+          ],
+          "ndcg": [
+            0.017510367318626218,
+            0.02146816083911329,
+            0.02735734251052855
+          ],
+          "hit_ratio": [
+            0.03372156705246632,
+            0.0508963452480923,
+            0.08336193362298733
+          ]
+        },
+        "selection_split": "validation"
+      },
+      "source": "logs/itemgcn_grid04_final_20260924/experiment_results/grid04_full_2proc_20260923_0210_amazon_original_nonrecdcl/original/sgl/amazon/aug_type-2_drop_rate-0p4_cl_rate-0p1_ssl_temp-0p5/attempt_001/result.json",
+      "config_selection": "test Recall@20",
+      "candidate_count": 24
+    },
+    {
+      "dataset": "amazon",
+      "model": "sgl",
+      "phase": "item_only",
+      "B": "mean",
+      "recipe": "aug_type-2_drop_rate-0p1_cl_rate-0p5_ssl_temp-0p5",
+      "params": {
+        "dataset": "amazon",
+        "data_path": "data/",
+        "gnn": "xsgl",
+        "epoch": 1000,
+        "batch_size": 2048,
+        "test_batch_size": 2048,
+        "dim": 64,
+        "l2": 0.001,
+        "lr": 0.001,
+        "mess_dropout": false,
+        "mess_dropout_rate": 0.1,
+        "edge_dropout": false,
+        "edge_dropout_rate": 0.1,
+        "batch_test_flag": true,
+        "ns": "rns",
+        "n_negs": 64,
+        "pool": "mean",
+        "alpha": 1.0,
+        "embedding0": true,
+        "norm_type": "sym",
+        "split": "sub",
+        "abl": "full",
+        "b_mode": "mean",
+        "b_a": 1.0,
+        "b_b": 0.0,
+        "s_mode": "cooccurrence",
+        "s_norm": "auto",
+        "s_gamma": 1.0,
+        "s_remove_diag": "auto",
+        "s_top_k": null,
+        "s_threshold": 0.0,
+        "s_rho": 1.0,
+        "Ks": "[10,20,50]",
+        "test_flag": "part",
+        "context_hops": 3,
+        "save": true,
+        "encoder": "lightgcn",
+        "cl_rate": 0.5,
+        "eps": 0.1,
+        "ssl_temp": 0.5,
+        "drop_rate": 0.1,
+        "aug_type": 2,
+        "a": 1.0,
+        "polyc": 1e-07,
+        "degree": 4,
+        "poly_coeff": 0.2,
+        "bt_coeff": 0.01,
+        "all_bt_coeff": 1.0,
+        "mom_coeff": 10.0,
+        "momentum": 0.3,
+        "simi": "ip",
+        "p": -0.5,
+        "beta": 0.5,
+        "gamma": null,
+        "graphau_layers": 4,
+        "decaying_base": 1.4,
+        "seed": 2025,
+        "weight_decay": 0.0,
+        "window_length": 5
+      },
+      "reference_best": {
+        "epoch": 15,
+        "validation": {
+          "precision": [
+            0.004756239757973557,
+            0.003532711458465167,
+            0.0022592335812431264
+          ],
+          "recall": [
+            0.04192410973060611,
+            0.06193798238292709,
+            0.09801375535245258
+          ],
+          "ndcg": [
+            0.023302064512619118,
+            0.028494440284891266,
+            0.03587180816733685
+          ],
+          "hit_ratio": [
+            0.04681394176225892,
+            0.06927549476868776,
+            0.1100466406151519
+          ]
+        },
+        "test": {
+          "precision": [
+            0.00377377779400525,
+            0.0028263171346164756,
+            0.0018403008507068839
+          ],
+          "recall": [
+            0.03354188403812231,
+            0.049928909655861026,
+            0.0802565347116658
+          ],
+          "ndcg": [
+            0.01932873179208954,
+            0.023567563414990115,
+            0.029762458939974416
+          ],
+          "hit_ratio": [
+            0.037328854649676876,
+            0.05564277629705356,
+            0.08959801380116104
+          ]
+        },
+        "selection_split": "validation"
+      },
+      "source": "logs/itemgcn_joint_stabcf_ahns_sgl_24way_20260927_0536_full_20261002/experiment_results/joint_stabcf_ahns_sgl_24way_20260927_0536/outputs/amazon/shard03/item_only/sgl/amazon/aug_type-2_drop_rate-0p1_cl_rate-0p5_ssl_temp-0p5__B_mean/attempt_001/result.json",
+      "config_selection": "test Recall@20",
+      "candidate_count": 696
+    },
+    {
+      "dataset": "amazon",
+      "model": "recdcl",
+      "phase": "original",
+      "B": null,
+      "recipe": "bt_coeff-0p01_poly_coeff-0p2_momentum-0p5_mom_coeff-10",
+      "params": {
+        "dataset": "amazon",
+        "data_path": "data/",
+        "gnn": "recdcl",
+        "epoch": 1000,
+        "batch_size": 2048,
+        "test_batch_size": 2048,
+        "dim": 64,
+        "l2": 0.0,
+        "lr": 0.001,
+        "mess_dropout": false,
+        "mess_dropout_rate": 0.1,
+        "edge_dropout": false,
+        "edge_dropout_rate": 0.1,
+        "batch_test_flag": true,
+        "ns": "rns",
+        "n_negs": 64,
+        "pool": "mean",
+        "alpha": 1.0,
+        "embedding0": true,
+        "norm_type": "sym",
+        "split": "sub",
+        "abl": "full",
+        "b_mode": "sym",
+        "b_a": 0.5,
+        "b_b": 0.5,
+        "s_mode": "cooccurrence",
+        "s_norm": "auto",
+        "s_gamma": 1.0,
+        "s_remove_diag": "auto",
+        "s_top_k": null,
+        "s_threshold": 0.0,
+        "s_rho": 1.0,
+        "Ks": "[10,20,50]",
+        "test_flag": "part",
+        "context_hops": 3,
+        "save": true,
+        "encoder": "lightgcn",
+        "cl_rate": 0.1,
+        "eps": 0.1,
+        "ssl_temp": 0.2,
+        "drop_rate": 0.1,
+        "aug_type": 1,
+        "a": 1.0,
+        "polyc": 1e-07,
+        "degree": 4,
+        "poly_coeff": 0.2,
+        "bt_coeff": 0.01,
+        "all_bt_coeff": 1.0,
+        "mom_coeff": 10.0,
+        "momentum": 0.5,
+        "simi": "ip",
+        "p": -0.5,
+        "beta": 0.5,
+        "gamma": null,
+        "graphau_layers": 4,
+        "decaying_base": 1.4,
+        "seed": 2025,
+        "weight_decay": 0.001,
+        "window_length": 5
+      },
+      "reference_best": {
+        "epoch": 30,
+        "validation": {
+          "precision": [
+            0.00392978696583925,
+            0.002991459725198943,
+            0.001972456825917476
+          ],
+          "recall": [
+            0.03425430907753941,
+            0.05210667180934631,
+            0.08523391674565119
+          ],
+          "ndcg": [
+            0.017808236479874603,
+            0.022423974463072534,
+            0.02917874790731505
+          ],
+          "hit_ratio": [
+            0.03896697340224379,
+            0.059001953863607716,
+            0.09644838018404135
+          ]
+        },
+        "test": {
+          "precision": [
+            0.003342947898791745,
+            0.002555040344664245,
+            0.0017452261856953334
+          ],
+          "recall": [
+            0.029868159132607288,
+            0.04520178281538577,
+            0.07623970560962456
+          ],
+          "ndcg": [
+            0.016653053289263538,
+            0.02060380321818758,
+            0.026946381578739433
+          ],
+          "hit_ratio": [
+            0.033151995326590966,
+            0.05049472415933404,
+            0.08551608309905437
+          ]
+        },
+        "selection_split": "validation"
+      },
+      "source": "logs/itemgcn_grid04_final_20260924/experiment_results/grid04_full_2proc_20260923_0210_amazon_original_recdcl/original/recdcl/amazon/bt_coeff-0p01_poly_coeff-0p2_momentum-0p5_mom_coeff-10/attempt_001/result.json",
+      "config_selection": "test Recall@20",
+      "candidate_count": 81
+    },
+    {
+      "dataset": "amazon",
+      "model": "recdcl",
+      "phase": "item_only",
+      "B": "degree_a1_b0p25",
+      "recipe": "bt_coeff-0p01_poly_coeff-0p2_momentum-0p5_mom_coeff-10",
+      "params": {
+        "dataset": "amazon",
+        "data_path": "data/",
+        "gnn": "xrecdcl",
+        "epoch": 1000,
+        "batch_size": 2048,
+        "test_batch_size": 2048,
+        "dim": 64,
+        "l2": 0.0,
+        "lr": 0.001,
+        "mess_dropout": false,
+        "mess_dropout_rate": 0.1,
+        "edge_dropout": false,
+        "edge_dropout_rate": 0.1,
+        "batch_test_flag": true,
+        "ns": "rns",
+        "n_negs": 64,
+        "pool": "mean",
+        "alpha": 1.0,
+        "embedding0": true,
+        "norm_type": "sym",
+        "split": "sub",
+        "abl": "full",
+        "b_mode": "degree",
+        "b_a": 1.0,
+        "b_b": 0.25,
+        "s_mode": "cooccurrence",
+        "s_norm": "auto",
+        "s_gamma": 1.0,
+        "s_remove_diag": "auto",
+        "s_top_k": null,
+        "s_threshold": 0.0,
+        "s_rho": 1.0,
+        "Ks": "[10,20,50]",
+        "test_flag": "part",
+        "context_hops": 3,
+        "save": true,
+        "encoder": "lightgcn",
+        "cl_rate": 0.1,
+        "eps": 0.1,
+        "ssl_temp": 0.2,
+        "drop_rate": 0.1,
+        "aug_type": 1,
+        "a": 1.0,
+        "polyc": 1e-07,
+        "degree": 4,
+        "poly_coeff": 0.2,
+        "bt_coeff": 0.01,
+        "all_bt_coeff": 1.0,
+        "mom_coeff": 10.0,
+        "momentum": 0.5,
+        "simi": "ip",
+        "p": -0.5,
+        "beta": 0.5,
+        "gamma": null,
+        "graphau_layers": 4,
+        "decaying_base": 1.4,
+        "seed": 2025,
+        "weight_decay": 0.001,
+        "window_length": 5
+      },
+      "reference_best": {
+        "epoch": 32,
+        "validation": {
+          "precision": [
+            0.004185049792008477,
+            0.0031372116475486557,
+            0.002063059372242932
+          ],
+          "recall": [
+            0.03680908598947764,
+            0.05527839041853877,
+            0.09061574427866209
+          ],
+          "ndcg": [
+            0.019661260426624135,
+            0.024418800256469857,
+            0.03158617178429252
+          ],
+          "hit_ratio": [
+            0.04161414345140552,
+            0.062176982226143956,
+            0.1014669734022438
+          ]
+        },
+        "test": {
+          "precision": [
+            0.002909197122932725,
+            0.002369564423674024,
+            0.0016887071452045999
+          ],
+          "recall": [
+            0.026428032286094662,
+            0.04222872330302213,
+            0.0740658072801501
+          ],
+          "ndcg": [
+            0.014214900133114479,
+            0.018311289151574456,
+            0.024800013570857316
+          ],
+          "hit_ratio": [
+            0.02898974040673263,
+            0.046989667384716494,
+            0.08302603234875315
+          ]
+        },
+        "selection_split": "validation"
+      },
+      "source": "logs/recdcl_4node_4proc_20261002_0445_logs_and_results/experiment_results/recdcl_4node_4proc_20261002_0445/amazon/shard_29_of_43/item_only/recdcl/amazon/bt_coeff-0p01_poly_coeff-0p2_momentum-0p5_mom_coeff-10__B_degree_a1_b0p25/attempt_004/result.json",
+      "config_selection": "test Recall@20",
+      "candidate_count": 2349
+    },
+    {
+      "dataset": "yelp2018",
+      "model": "rns",
+      "phase": "original",
+      "B": null,
+      "recipe": "baseline",
+      "params": {
+        "dataset": "yelp2018",
+        "data_path": "data/",
+        "gnn": "lightgcn",
+        "epoch": 1000,
+        "batch_size": 2048,
+        "test_batch_size": 2048,
+        "dim": 64,
+        "l2": 0.001,
+        "lr": 0.001,
+        "mess_dropout": false,
+        "mess_dropout_rate": 0.1,
+        "edge_dropout": false,
+        "edge_dropout_rate": 0.1,
+        "batch_test_flag": true,
+        "ns": "rns",
+        "n_negs": 1,
+        "pool": "mean",
+        "alpha": 1.0,
+        "embedding0": true,
+        "norm_type": "sym",
+        "split": "sub",
+        "abl": "full",
+        "b_mode": "sym",
+        "b_a": 0.5,
+        "b_b": 0.5,
+        "s_mode": "cooccurrence",
+        "s_norm": "auto",
+        "s_gamma": 1.0,
+        "s_remove_diag": "auto",
+        "s_top_k": null,
+        "s_threshold": 0.0,
+        "s_rho": 1.0,
+        "Ks": "[10,20,50]",
+        "test_flag": "part",
+        "context_hops": 3,
+        "save": true,
+        "encoder": "lightgcn",
+        "cl_rate": 0.1,
+        "eps": 0.1,
+        "ssl_temp": 0.2,
+        "drop_rate": 0.1,
+        "aug_type": 1,
+        "a": 1.0,
+        "polyc": 1e-07,
+        "degree": 4,
+        "poly_coeff": 0.2,
+        "bt_coeff": 0.01,
+        "all_bt_coeff": 1.0,
+        "mom_coeff": 10.0,
+        "momentum": 0.3,
+        "simi": "ip",
+        "p": -0.5,
+        "beta": 0.5,
+        "gamma": null,
+        "graphau_layers": 4,
+        "decaying_base": 1.4,
+        "seed": 2025,
+        "weight_decay": 0.0,
+        "window_length": 5
+      },
+      "reference_best": {
+        "epoch": 185,
+        "validation": {
+          "precision": [
+            0.029250347353799142,
+            0.025530503978777055,
+            0.020335985853223503
+          ],
+          "recall": [
+            0.03233802171823729,
+            0.05629810953003882,
+            0.11088268278871423
+          ],
+          "ndcg": [
+            0.0366898749859883,
+            0.04551560002202932,
+            0.06575602800370083
+          ],
+          "hit_ratio": [
+            0.2341796134899583,
+            0.3579007199696855,
+            0.556113426803082
+          ]
+        },
+        "test": {
+          "precision": [
+            0.029250347353799142,
+            0.025530503978777055,
+            0.020335985853223503
+          ],
+          "recall": [
+            0.03233802171823729,
+            0.05629810953003882,
+            0.11088268278871423
+          ],
+          "ndcg": [
+            0.0366898749859883,
+            0.04551560002202932,
+            0.06575602800370083
+          ],
+          "hit_ratio": [
+            0.2341796134899583,
+            0.3579007199696855,
+            0.556113426803082
+          ]
+        },
+        "selection_split": "test"
+      },
+      "source": "logs/itemgcn_grid04_final_20260924/experiment_results/grid04_full_2proc_20260923_0210_yelp2018_original_nonrecdcl/original/rns/yelp2018/baseline/attempt_001/result.json",
+      "config_selection": "test Recall@20",
+      "candidate_count": 1
+    },
+    {
+      "dataset": "yelp2018",
+      "model": "rns",
+      "phase": "item_only",
+      "B": "degree_a0p5_b0p25",
+      "recipe": "baseline",
+      "params": {
+        "dataset": "yelp2018",
+        "data_path": "data/",
+        "gnn": "xlightgcn",
+        "epoch": 1000,
+        "batch_size": 2048,
+        "test_batch_size": 2048,
+        "dim": 64,
+        "l2": 0.001,
+        "lr": 0.001,
+        "mess_dropout": false,
+        "mess_dropout_rate": 0.1,
+        "edge_dropout": false,
+        "edge_dropout_rate": 0.1,
+        "batch_test_flag": true,
+        "ns": "rns",
+        "n_negs": 1,
+        "pool": "mean",
+        "alpha": 1.0,
+        "embedding0": true,
+        "norm_type": "sym",
+        "split": "sub",
+        "abl": "full",
+        "b_mode": "degree",
+        "b_a": 0.5,
+        "b_b": 0.25,
+        "s_mode": "cooccurrence",
+        "s_norm": "auto",
+        "s_gamma": 1.0,
+        "s_remove_diag": "auto",
+        "s_top_k": null,
+        "s_threshold": 0.0,
+        "s_rho": 1.0,
+        "Ks": "[10,20,50]",
+        "test_flag": "part",
+        "context_hops": 3,
+        "save": true,
+        "encoder": "lightgcn",
+        "cl_rate": 0.1,
+        "eps": 0.1,
+        "ssl_temp": 0.2,
+        "drop_rate": 0.1,
+        "aug_type": 1,
+        "a": 1.0,
+        "polyc": 1e-07,
+        "degree": 4,
+        "poly_coeff": 0.2,
+        "bt_coeff": 0.01,
+        "all_bt_coeff": 1.0,
+        "mom_coeff": 10.0,
+        "momentum": 0.3,
+        "simi": "ip",
+        "p": -0.5,
+        "beta": 0.5,
+        "gamma": null,
+        "graphau_layers": 4,
+        "decaying_base": 1.4,
+        "seed": 2025,
+        "weight_decay": 0.0,
+        "window_length": 5
+      },
+      "reference_best": {
+        "epoch": 199,
+        "validation": {
+          "precision": [
+            0.029850322091705035,
+            0.026117847669568907,
+            0.02075028419855604
+          ],
+          "recall": [
+            0.03285551082353709,
+            0.057442251640444905,
+            0.11306397621646122
+          ],
+          "ndcg": [
+            0.03755201459124194,
+            0.04660345593661399,
+            0.0672204592552266
+          ],
+          "hit_ratio": [
+            0.23878994568649742,
+            0.36273209549071617,
+            0.5624921055955538
+          ]
+        },
+        "test": {
+          "precision": [
+            0.029850322091705035,
+            0.026117847669568907,
+            0.02075028419855604
+          ],
+          "recall": [
+            0.03285551082353709,
+            0.057442251640444905,
+            0.11306397621646122
+          ],
+          "ndcg": [
+            0.03755201459124194,
+            0.04660345593661399,
+            0.0672204592552266
+          ],
+          "hit_ratio": [
+            0.23878994568649742,
+            0.36273209549071617,
+            0.5624921055955538
+          ]
+        },
+        "selection_split": "test"
+      },
+      "source": "logs/remaining_multinode_64way_20261003_results/projects/ItemGCN/experiment_results/joint_user_repr_no_sym/remaining_multinode_64way/yelp2018/shard_12_of_21/item_only/rns/yelp2018/baseline__B_degree_a0p5_b0p25/attempt_001/result.json",
+      "config_selection": "test Recall@20",
+      "candidate_count": 29
+    },
+    {
+      "dataset": "yelp2018",
+      "model": "mixgcf",
+      "phase": "original",
+      "B": null,
+      "recipe": "n_negs-64",
+      "params": {
+        "dataset": "yelp2018",
+        "data_path": "data/",
+        "gnn": "lightgcn",
+        "epoch": 1000,
+        "batch_size": 2048,
+        "test_batch_size": 2048,
+        "dim": 64,
+        "l2": 0.001,
+        "lr": 0.001,
+        "mess_dropout": false,
+        "mess_dropout_rate": 0.1,
+        "edge_dropout": false,
+        "edge_dropout_rate": 0.1,
+        "batch_test_flag": true,
+        "ns": "mixgcf",
+        "n_negs": 64,
+        "pool": "mean",
+        "alpha": 1.0,
+        "embedding0": true,
+        "norm_type": "sym",
+        "split": "sub",
+        "abl": "full",
+        "b_mode": "sym",
+        "b_a": 0.5,
+        "b_b": 0.5,
+        "s_mode": "cooccurrence",
+        "s_norm": "auto",
+        "s_gamma": 1.0,
+        "s_remove_diag": "auto",
+        "s_top_k": null,
+        "s_threshold": 0.0,
+        "s_rho": 1.0,
+        "Ks": "[10,20,50]",
+        "test_flag": "part",
+        "context_hops": 3,
+        "save": true,
+        "encoder": "lightgcn",
+        "cl_rate": 0.1,
+        "eps": 0.1,
+        "ssl_temp": 0.2,
+        "drop_rate": 0.1,
+        "aug_type": 1,
+        "a": 1.0,
+        "polyc": 1e-07,
+        "degree": 4,
+        "poly_coeff": 0.2,
+        "bt_coeff": 0.01,
+        "all_bt_coeff": 1.0,
+        "mom_coeff": 10.0,
+        "momentum": 0.3,
+        "simi": "ip",
+        "p": -0.5,
+        "beta": 0.5,
+        "gamma": null,
+        "graphau_layers": 4,
+        "decaying_base": 1.4,
+        "seed": 2025,
+        "weight_decay": 0.0,
+        "window_length": 5
+      },
+      "reference_best": {
+        "epoch": 51,
+        "validation": {
+          "precision": [
+            0.037751042061387824,
+            0.03266230895540765,
+            0.025144625489447178
+          ],
+          "recall": [
+            0.042022586158787824,
+            0.07235015881727246,
+            0.13749072215621289
+          ],
+          "ndcg": [
+            0.04842393948448912,
+            0.05951231705513866,
+            0.08360332931068594
+          ],
+          "hit_ratio": [
+            0.290703549324239,
+            0.42715043577112544,
+            0.6241316155109259
+          ]
+        },
+        "test": {
+          "precision": [
+            0.037751042061387824,
+            0.03266230895540765,
+            0.025144625489447178
+          ],
+          "recall": [
+            0.042022586158787824,
+            0.07235015881727246,
+            0.13749072215621289
+          ],
+          "ndcg": [
+            0.04842393948448912,
+            0.05951231705513866,
+            0.08360332931068594
+          ],
+          "hit_ratio": [
+            0.290703549324239,
+            0.42715043577112544,
+            0.6241316155109259
+          ]
+        },
+        "selection_split": "test"
+      },
+      "source": "logs/itemgcn_grid04_final_20260924/experiment_results/grid04_full_2proc_20260923_0210_yelp2018_original_nonrecdcl/original/mixgcf/yelp2018/n_negs-64/attempt_001/result.json",
+      "config_selection": "test Recall@20",
+      "candidate_count": 3
+    },
+    {
+      "dataset": "yelp2018",
+      "model": "mixgcf",
+      "phase": "item_only",
+      "B": "mean",
+      "recipe": "n_negs-64",
+      "params": {
+        "dataset": "yelp2018",
+        "data_path": "data/",
+        "gnn": "xlightgcn",
+        "epoch": 1000,
+        "batch_size": 2048,
+        "test_batch_size": 2048,
+        "dim": 64,
+        "l2": 0.001,
+        "lr": 0.001,
+        "mess_dropout": false,
+        "mess_dropout_rate": 0.1,
+        "edge_dropout": false,
+        "edge_dropout_rate": 0.1,
+        "batch_test_flag": true,
+        "ns": "mixgcf",
+        "n_negs": 64,
+        "pool": "mean",
+        "alpha": 1.0,
+        "embedding0": true,
+        "norm_type": "sym",
+        "split": "sub",
+        "abl": "full",
+        "b_mode": "mean",
+        "b_a": 1.0,
+        "b_b": 0.0,
+        "s_mode": "cooccurrence",
+        "s_norm": "auto",
+        "s_gamma": 1.0,
+        "s_remove_diag": "auto",
+        "s_top_k": null,
+        "s_threshold": 0.0,
+        "s_rho": 1.0,
+        "Ks": "[10,20,50]",
+        "test_flag": "part",
+        "context_hops": 3,
+        "save": true,
+        "encoder": "lightgcn",
+        "cl_rate": 0.1,
+        "eps": 0.1,
+        "ssl_temp": 0.2,
+        "drop_rate": 0.1,
+        "aug_type": 1,
+        "a": 1.0,
+        "polyc": 1e-07,
+        "degree": 4,
+        "poly_coeff": 0.2,
+        "bt_coeff": 0.01,
+        "all_bt_coeff": 1.0,
+        "mom_coeff": 10.0,
+        "momentum": 0.3,
+        "simi": "ip",
+        "p": -0.5,
+        "beta": 0.5,
+        "gamma": null,
+        "graphau_layers": 4,
+        "decaying_base": 1.4,
+        "seed": 2025,
+        "weight_decay": 0.0,
+        "window_length": 5
+      },
+      "reference_best": {
+        "epoch": 104,
+        "validation": {
+          "precision": [
+            0.0385152204117725,
+            0.03309492231905544,
+            0.025330933434375685
+          ],
+          "recall": [
+            0.04304886149430344,
+            0.07343328219085205,
+            0.13868414306132942
+          ],
+          "ndcg": [
+            0.049376168572277446,
+            0.06043434509735001,
+            0.08452336931318233
+          ],
+          "hit_ratio": [
+            0.2948402172540104,
+            0.4290766704559808,
+            0.6255841859290135
+          ]
+        },
+        "test": {
+          "precision": [
+            0.0385152204117725,
+            0.03309492231905544,
+            0.025330933434375685
+          ],
+          "recall": [
+            0.04304886149430344,
+            0.07343328219085205,
+            0.13868414306132942
+          ],
+          "ndcg": [
+            0.049376168572277446,
+            0.06043434509735001,
+            0.08452336931318233
+          ],
+          "hit_ratio": [
+            0.2948402172540104,
+            0.4290766704559808,
+            0.6255841859290135
+          ]
+        },
+        "selection_split": "test"
+      },
+      "source": "logs/remaining_multinode_64way_20261003_results/projects/ItemGCN/experiment_results/joint_user_repr_no_sym/remaining_multinode_64way/yelp2018/shard_8_of_21/item_only/mixgcf/yelp2018/n_negs-64__B_mean/attempt_001/result.json",
+      "config_selection": "test Recall@20",
+      "candidate_count": 87
+    },
+    {
+      "dataset": "yelp2018",
+      "model": "ahns",
+      "phase": "original",
+      "B": null,
+      "recipe": "alpha-0p1_beta-0p4_n_negs-32",
+      "params": {
+        "dataset": "yelp2018",
+        "data_path": "data/",
+        "gnn": "ahns",
+        "epoch": 1000,
+        "batch_size": 2048,
+        "test_batch_size": 2048,
+        "dim": 64,
+        "l2": 0.001,
+        "lr": 0.001,
+        "mess_dropout": false,
+        "mess_dropout_rate": 0.1,
+        "edge_dropout": false,
+        "edge_dropout_rate": 0.1,
+        "batch_test_flag": true,
+        "ns": "rns",
+        "n_negs": 32,
+        "pool": "mean",
+        "alpha": 0.1,
+        "embedding0": true,
+        "norm_type": "sym",
+        "split": "sub",
+        "abl": "full",
+        "b_mode": "sym",
+        "b_a": 0.5,
+        "b_b": 0.5,
+        "s_mode": "cooccurrence",
+        "s_norm": "auto",
+        "s_gamma": 1.0,
+        "s_remove_diag": "auto",
+        "s_top_k": null,
+        "s_threshold": 0.0,
+        "s_rho": 1.0,
+        "Ks": "[10,20,50]",
+        "test_flag": "part",
+        "context_hops": 3,
+        "save": true,
+        "encoder": "lightgcn",
+        "cl_rate": 0.1,
+        "eps": 0.1,
+        "ssl_temp": 0.2,
+        "drop_rate": 0.1,
+        "aug_type": 1,
+        "a": 1.0,
+        "polyc": 1e-07,
+        "degree": 4,
+        "poly_coeff": 0.2,
+        "bt_coeff": 0.01,
+        "all_bt_coeff": 1.0,
+        "mom_coeff": 10.0,
+        "momentum": 0.3,
+        "simi": "ip",
+        "p": -2.0,
+        "beta": 0.4,
+        "gamma": null,
+        "graphau_layers": 4,
+        "decaying_base": 1.4,
+        "seed": 2025,
+        "weight_decay": 0.0,
+        "window_length": 5
+      },
+      "reference_best": {
+        "epoch": 3,
+        "validation": {
+          "precision": [
+            0.02662940507768395,
+            0.02300271567512792,
+            0.01810471138057097
+          ],
+          "recall": [
+            0.028733444344004343,
+            0.04937534346377131,
+            0.09593868894311725
+          ],
+          "ndcg": [
+            0.033021182128954434,
+            0.04039854546933227,
+            0.057653119727976064
+          ],
+          "hit_ratio": [
+            0.21336996336996336,
+            0.32284956422887456,
+            0.5036945812807881
+          ]
+        },
+        "test": {
+          "precision": [
+            0.02662940507768395,
+            0.02300271567512792,
+            0.01810471138057097
+          ],
+          "recall": [
+            0.028733444344004343,
+            0.04937534346377131,
+            0.09593868894311725
+          ],
+          "ndcg": [
+            0.033021182128954434,
+            0.04039854546933227,
+            0.057653119727976064
+          ],
+          "hit_ratio": [
+            0.21336996336996336,
+            0.32284956422887456,
+            0.5036945812807881
+          ]
+        },
+        "selection_split": "test"
+      },
+      "source": "logs/itemgcn_grid04_final_20260924/experiment_results/grid04_full_2proc_20260923_0210_yelp2018_original_nonrecdcl/original/ahns/yelp2018/alpha-0p1_beta-0p4_n_negs-32/attempt_001/result.json",
+      "config_selection": "test Recall@20",
+      "candidate_count": 12
+    },
+    {
+      "dataset": "yelp2018",
+      "model": "ahns",
+      "phase": "item_only",
+      "B": "degree_a1_b1",
+      "recipe": "alpha-0p1_beta-0p4_n_negs-32",
+      "params": {
+        "dataset": "yelp2018",
+        "data_path": "data/",
+        "gnn": "xahns",
+        "epoch": 1000,
+        "batch_size": 2048,
+        "test_batch_size": 2048,
+        "dim": 64,
+        "l2": 0.001,
+        "lr": 0.001,
+        "mess_dropout": false,
+        "mess_dropout_rate": 0.1,
+        "edge_dropout": false,
+        "edge_dropout_rate": 0.1,
+        "batch_test_flag": true,
+        "ns": "rns",
+        "n_negs": 32,
+        "pool": "mean",
+        "alpha": 0.1,
+        "embedding0": true,
+        "norm_type": "sym",
+        "split": "sub",
+        "abl": "full",
+        "b_mode": "degree",
+        "b_a": 1.0,
+        "b_b": 1.0,
+        "s_mode": "cooccurrence",
+        "s_norm": "auto",
+        "s_gamma": 1.0,
+        "s_remove_diag": "auto",
+        "s_top_k": null,
+        "s_threshold": 0.0,
+        "s_rho": 1.0,
+        "Ks": "[10,20,50]",
+        "test_flag": "part",
+        "context_hops": 3,
+        "save": true,
+        "encoder": "lightgcn",
+        "cl_rate": 0.1,
+        "eps": 0.1,
+        "ssl_temp": 0.2,
+        "drop_rate": 0.1,
+        "aug_type": 1,
+        "a": 1.0,
+        "polyc": 1e-07,
+        "degree": 4,
+        "poly_coeff": 0.2,
+        "bt_coeff": 0.01,
+        "all_bt_coeff": 1.0,
+        "mom_coeff": 10.0,
+        "momentum": 0.3,
+        "simi": "ip",
+        "p": -2.0,
+        "beta": 0.4,
+        "gamma": null,
+        "graphau_layers": 4,
+        "decaying_base": 1.4,
+        "seed": 2025,
+        "weight_decay": 0.0,
+        "window_length": 5
+      },
+      "reference_best": {
+        "epoch": 6,
+        "validation": {
+          "precision": [
+            0.025798913729951096,
+            0.0222732727043059,
+            0.017728937728935548
+          ],
+          "recall": [
+            0.02798562437168369,
+            0.047899627248728774,
+            0.09401863306155402
+          ],
+          "ndcg": [
+            0.03209169644630338,
+            0.03924689002441376,
+            0.056388745339043894
+          ],
+          "hit_ratio": [
+            0.2068649741063534,
+            0.31479727169382343,
+            0.49507389162561577
+          ]
+        },
+        "test": {
+          "precision": [
+            0.025798913729951096,
+            0.0222732727043059,
+            0.017728937728935548
+          ],
+          "recall": [
+            0.02798562437168369,
+            0.047899627248728774,
+            0.09401863306155402
+          ],
+          "ndcg": [
+            0.03209169644630338,
+            0.03924689002441376,
+            0.056388745339043894
+          ],
+          "hit_ratio": [
+            0.2068649741063534,
+            0.31479727169382343,
+            0.49507389162561577
+          ]
+        },
+        "selection_split": "test"
+      },
+      "source": "logs/itemgcn_joint_stabcf_ahns_sgl_24way_20260927_0536_full_20261002/experiment_results/joint_stabcf_ahns_sgl_24way_20260927_0536/outputs/yelp2018/shard07/item_only/ahns/yelp2018/alpha-0p1_beta-0p4_n_negs-32__B_degree_a1_b1/attempt_001/result.json",
+      "config_selection": "test Recall@20",
+      "candidate_count": 348
+    },
+    {
+      "dataset": "yelp2018",
+      "model": "stabcf",
+      "phase": "original",
+      "B": null,
+      "recipe": "n_negs-64_window_length-5_alpha-20p0",
+      "params": {
+        "dataset": "yelp2018",
+        "data_path": "data/",
+        "gnn": "lightgcn",
+        "epoch": 1000,
+        "batch_size": 2048,
+        "test_batch_size": 2048,
+        "dim": 64,
+        "l2": 0.001,
+        "lr": 0.001,
+        "mess_dropout": false,
+        "mess_dropout_rate": 0.1,
+        "edge_dropout": false,
+        "edge_dropout_rate": 0.1,
+        "batch_test_flag": true,
+        "ns": "stabcf",
+        "n_negs": 64,
+        "pool": "mean",
+        "alpha": 20.0,
+        "embedding0": true,
+        "norm_type": "sym",
+        "split": "sub",
+        "abl": "full",
+        "b_mode": "sym",
+        "b_a": 0.5,
+        "b_b": 0.5,
+        "s_mode": "cooccurrence",
+        "s_norm": "auto",
+        "s_gamma": 1.0,
+        "s_remove_diag": "auto",
+        "s_top_k": null,
+        "s_threshold": 0.0,
+        "s_rho": 1.0,
+        "Ks": "[10,20,50]",
+        "test_flag": "part",
+        "context_hops": 3,
+        "save": true,
+        "encoder": "lightgcn",
+        "cl_rate": 0.1,
+        "eps": 0.1,
+        "ssl_temp": 0.2,
+        "drop_rate": 0.1,
+        "aug_type": 1,
+        "a": 1.0,
+        "polyc": 1e-07,
+        "degree": 4,
+        "poly_coeff": 0.2,
+        "bt_coeff": 0.01,
+        "all_bt_coeff": 1.0,
+        "mom_coeff": 10.0,
+        "momentum": 0.3,
+        "simi": "ip",
+        "p": -0.5,
+        "beta": 0.5,
+        "gamma": null,
+        "graphau_layers": 4,
+        "decaying_base": 1.4,
+        "seed": 2025,
+        "weight_decay": 0.0,
+        "window_length": 5
+      },
+      "reference_best": {
+        "epoch": 51,
+        "validation": {
+          "precision": [
+            0.037858405961854996,
+            0.03273809523809049,
+            0.025225464190975485
+          ],
+          "recall": [
+            0.042293174256973244,
+            0.072823121757595,
+            0.1379405086481814
+          ],
+          "ndcg": [
+            0.04847595444815582,
+            0.05963816608430024,
+            0.0837682210605793
+          ],
+          "hit_ratio": [
+            0.29155614500442084,
+            0.42942402425161047,
+            0.625552608311229
+          ]
+        },
+        "test": {
+          "precision": [
+            0.037858405961854996,
+            0.03273809523809049,
+            0.025225464190975485
+          ],
+          "recall": [
+            0.042293174256973244,
+            0.072823121757595,
+            0.1379405086481814
+          ],
+          "ndcg": [
+            0.04847595444815582,
+            0.05963816608430024,
+            0.0837682210605793
+          ],
+          "hit_ratio": [
+            0.29155614500442084,
+            0.42942402425161047,
+            0.625552608311229
+          ]
+        },
+        "selection_split": "test"
+      },
+      "source": "logs/itemgcn_grid04_final_20260924/experiment_results/grid04_full_2proc_20260923_0210_yelp2018_original_nonrecdcl/original/stabcf/yelp2018/n_negs-64_window_length-5_alpha-20p0/attempt_001/result.json",
+      "config_selection": "test Recall@20",
+      "candidate_count": 12
+    },
+    {
+      "dataset": "yelp2018",
+      "model": "stabcf",
+      "phase": "item_only",
+      "B": "degree_a0p75_b0",
+      "recipe": "n_negs-64_window_length-10_alpha-20p0",
+      "params": {
+        "dataset": "yelp2018",
+        "data_path": "data/",
+        "gnn": "xlightgcn",
+        "epoch": 1000,
+        "batch_size": 2048,
+        "test_batch_size": 2048,
+        "dim": 64,
+        "l2": 0.001,
+        "lr": 0.001,
+        "mess_dropout": false,
+        "mess_dropout_rate": 0.1,
+        "edge_dropout": false,
+        "edge_dropout_rate": 0.1,
+        "batch_test_flag": true,
+        "ns": "stabcf",
+        "n_negs": 64,
+        "pool": "mean",
+        "alpha": 20.0,
+        "embedding0": true,
+        "norm_type": "sym",
+        "split": "sub",
+        "abl": "full",
+        "b_mode": "degree",
+        "b_a": 0.75,
+        "b_b": 0.0,
+        "s_mode": "cooccurrence",
+        "s_norm": "auto",
+        "s_gamma": 1.0,
+        "s_remove_diag": "auto",
+        "s_top_k": null,
+        "s_threshold": 0.0,
+        "s_rho": 1.0,
+        "Ks": "[10,20,50]",
+        "test_flag": "part",
+        "context_hops": 3,
+        "save": true,
+        "encoder": "lightgcn",
+        "cl_rate": 0.1,
+        "eps": 0.1,
+        "ssl_temp": 0.2,
+        "drop_rate": 0.1,
+        "aug_type": 1,
+        "a": 1.0,
+        "polyc": 1e-07,
+        "degree": 4,
+        "poly_coeff": 0.2,
+        "bt_coeff": 0.01,
+        "all_bt_coeff": 1.0,
+        "mom_coeff": 10.0,
+        "momentum": 0.3,
+        "simi": "ip",
+        "p": -0.5,
+        "beta": 0.5,
+        "gamma": null,
+        "graphau_layers": 4,
+        "decaying_base": 1.4,
+        "seed": 2025,
+        "weight_decay": 0.0,
+        "window_length": 10
+      },
+      "reference_best": {
+        "epoch": 34,
+        "validation": {
+          "precision": [
+            0.03778893520272919,
+            0.032438107869137665,
+            0.02503599848426836
+          ],
+          "recall": [
+            0.042249708078556596,
+            0.07208463783722827,
+            0.1367547531315519
+          ],
+          "ndcg": [
+            0.0482814452536073,
+            0.05912558302247976,
+            0.08306172487323593
+          ],
+          "hit_ratio": [
+            0.2889352027283062,
+            0.42591890867752935,
+            0.6215422508525957
+          ]
+        },
+        "test": {
+          "precision": [
+            0.03778893520272919,
+            0.032438107869137665,
+            0.02503599848426836
+          ],
+          "recall": [
+            0.042249708078556596,
+            0.07208463783722827,
+            0.1367547531315519
+          ],
+          "ndcg": [
+            0.0482814452536073,
+            0.05912558302247976,
+            0.08306172487323593
+          ],
+          "hit_ratio": [
+            0.2889352027283062,
+            0.42591890867752935,
+            0.6215422508525957
+          ]
+        },
+        "selection_split": "test"
+      },
+      "source": "logs/itemgcn_joint_stabcf_ahns_sgl_24way_20260927_0536_full_20261002/experiment_results/joint_stabcf_ahns_sgl_24way_20260927_0536/outputs/yelp2018/shard02/item_only/stabcf/yelp2018/n_negs-64_window_length-10_alpha-20p0__B_degree_a0p75_b0/attempt_001/result.json",
+      "config_selection": "test Recall@20",
+      "candidate_count": 348
+    },
+    {
+      "dataset": "yelp2018",
+      "model": "directau",
+      "phase": "original",
+      "B": null,
+      "recipe": "gamma-2",
+      "params": {
+        "dataset": "yelp2018",
+        "data_path": "data/",
+        "gnn": "directau",
+        "epoch": 1000,
+        "batch_size": 2048,
+        "test_batch_size": 2048,
+        "dim": 64,
+        "l2": 0.0,
+        "lr": 0.001,
+        "mess_dropout": false,
+        "mess_dropout_rate": 0.1,
+        "edge_dropout": false,
+        "edge_dropout_rate": 0.1,
+        "batch_test_flag": true,
+        "ns": "rns",
+        "n_negs": 64,
+        "pool": "mean",
+        "alpha": 1.0,
+        "embedding0": true,
+        "norm_type": "sym",
+        "split": "sub",
+        "abl": "full",
+        "b_mode": "sym",
+        "b_a": 0.5,
+        "b_b": 0.5,
+        "s_mode": "cooccurrence",
+        "s_norm": "auto",
+        "s_gamma": 1.0,
+        "s_remove_diag": "auto",
+        "s_top_k": null,
+        "s_threshold": 0.0,
+        "s_rho": 1.0,
+        "Ks": "[10,20,50]",
+        "test_flag": "part",
+        "context_hops": 3,
+        "save": true,
+        "encoder": "lightgcn",
+        "cl_rate": 0.1,
+        "eps": 0.1,
+        "ssl_temp": 0.2,
+        "drop_rate": 0.1,
+        "aug_type": 1,
+        "a": 1.0,
+        "polyc": 1e-07,
+        "degree": 4,
+        "poly_coeff": 0.2,
+        "bt_coeff": 0.01,
+        "all_bt_coeff": 1.0,
+        "mom_coeff": 10.0,
+        "momentum": 0.3,
+        "simi": "ip",
+        "p": -0.5,
+        "beta": 0.5,
+        "gamma": 2.0,
+        "graphau_layers": 4,
+        "decaying_base": 1.4,
+        "seed": 2025,
+        "weight_decay": 0.001,
+        "window_length": 5
+      },
+      "reference_best": {
+        "epoch": 46,
+        "validation": {
+          "precision": [
+            0.03362384741695418,
+            0.028711948970566083,
+            0.02201086270051351
+          ],
+          "recall": [
+            0.03691785907759763,
+            0.06269412644352397,
+            0.11872176486951866
+          ],
+          "ndcg": [
+            0.04307180256041392,
+            0.05225276766834609,
+            0.07294378555870534
+          ],
+          "hit_ratio": [
+            0.2623152709359606,
+            0.38846785398509537,
+            0.5771125426297841
+          ]
+        },
+        "test": {
+          "precision": [
+            0.03362384741695418,
+            0.028711948970566083,
+            0.02201086270051351
+          ],
+          "recall": [
+            0.03691785907759763,
+            0.06269412644352397,
+            0.11872176486951866
+          ],
+          "ndcg": [
+            0.04307180256041392,
+            0.05225276766834609,
+            0.07294378555870534
+          ],
+          "hit_ratio": [
+            0.2623152709359606,
+            0.38846785398509537,
+            0.5771125426297841
+          ]
+        },
+        "selection_split": "test"
+      },
+      "source": "logs/itemgcn_grid04_final_20260924/experiment_results/grid04_full_2proc_20260923_0210_yelp2018_original_nonrecdcl/original/directau/yelp2018/gamma-2/attempt_001/result.json",
+      "config_selection": "test Recall@20",
+      "candidate_count": 6
+    },
+    {
+      "dataset": "yelp2018",
+      "model": "directau",
+      "phase": "item_only",
+      "B": "degree_a0_b0p25",
+      "recipe": "gamma-5",
+      "params": {
+        "dataset": "yelp2018",
+        "data_path": "data/",
+        "gnn": "xdirectau",
+        "epoch": 1000,
+        "batch_size": 2048,
+        "test_batch_size": 2048,
+        "dim": 64,
+        "l2": 0.0,
+        "lr": 0.001,
+        "mess_dropout": false,
+        "mess_dropout_rate": 0.1,
+        "edge_dropout": false,
+        "edge_dropout_rate": 0.1,
+        "batch_test_flag": true,
+        "ns": "rns",
+        "n_negs": 64,
+        "pool": "mean",
+        "alpha": 1.0,
+        "embedding0": true,
+        "norm_type": "sym",
+        "split": "sub",
+        "abl": "full",
+        "b_mode": "degree",
+        "b_a": 0.0,
+        "b_b": 0.25,
+        "s_mode": "cooccurrence",
+        "s_norm": "auto",
+        "s_gamma": 1.0,
+        "s_remove_diag": "auto",
+        "s_top_k": null,
+        "s_threshold": 0.0,
+        "s_rho": 1.0,
+        "Ks": "[10,20,50]",
+        "test_flag": "part",
+        "context_hops": 3,
+        "save": true,
+        "encoder": "lightgcn",
+        "cl_rate": 0.1,
+        "eps": 0.1,
+        "ssl_temp": 0.2,
+        "drop_rate": 0.1,
+        "aug_type": 1,
+        "a": 1.0,
+        "polyc": 1e-07,
+        "degree": 4,
+        "poly_coeff": 0.2,
+        "bt_coeff": 0.01,
+        "all_bt_coeff": 1.0,
+        "mom_coeff": 10.0,
+        "momentum": 0.3,
+        "simi": "ip",
+        "p": -0.5,
+        "beta": 0.5,
+        "gamma": 5.0,
+        "graphau_layers": 4,
+        "decaying_base": 1.4,
+        "seed": 2025,
+        "weight_decay": 0.001,
+        "window_length": 5
+      },
+      "reference_best": {
+        "epoch": 14,
+        "validation": {
+          "precision": [
+            0.037075281040799477,
+            0.03129499810533876,
+            0.023930781861811135
+          ],
+          "recall": [
+            0.04149810488688979,
+            0.0698284154659567,
+            0.13161290688172234
+          ],
+          "ndcg": [
+            0.047871811316851254,
+            0.05794148690780282,
+            0.08086240485741474
+          ],
+          "hit_ratio": [
+            0.28555639762536317,
+            0.4158772262220538,
+            0.6079007199696855
+          ]
+        },
+        "test": {
+          "precision": [
+            0.037075281040799477,
+            0.03129499810533876,
+            0.023930781861811135
+          ],
+          "recall": [
+            0.04149810488688979,
+            0.0698284154659567,
+            0.13161290688172234
+          ],
+          "ndcg": [
+            0.047871811316851254,
+            0.05794148690780282,
+            0.08086240485741474
+          ],
+          "hit_ratio": [
+            0.28555639762536317,
+            0.4158772262220538,
+            0.6079007199696855
+          ]
+        },
+        "selection_split": "test"
+      },
+      "source": "logs/remaining_multinode_64way_20261003_results/projects/ItemGCN/experiment_results/joint_user_repr_no_sym/remaining_multinode_64way/yelp2018/shard_17_of_21/item_only/directau/yelp2018/gamma-5__B_degree_a0_b0p25/attempt_001/result.json",
+      "config_selection": "test Recall@20",
+      "candidate_count": 174
+    },
+    {
+      "dataset": "yelp2018",
+      "model": "graphau",
+      "phase": "original",
+      "B": null,
+      "recipe": "gamma-1p7_decaying_base-1p5",
+      "params": {
+        "dataset": "yelp2018",
+        "data_path": "data/",
+        "gnn": "graphau",
+        "epoch": 1000,
+        "batch_size": 2048,
+        "test_batch_size": 2048,
+        "dim": 64,
+        "l2": 0.0,
+        "lr": 0.001,
+        "mess_dropout": false,
+        "mess_dropout_rate": 0.1,
+        "edge_dropout": false,
+        "edge_dropout_rate": 0.1,
+        "batch_test_flag": true,
+        "ns": "rns",
+        "n_negs": 64,
+        "pool": "mean",
+        "alpha": 1.0,
+        "embedding0": true,
+        "norm_type": "sym",
+        "split": "sub",
+        "abl": "full",
+        "b_mode": "sym",
+        "b_a": 0.5,
+        "b_b": 0.5,
+        "s_mode": "cooccurrence",
+        "s_norm": "auto",
+        "s_gamma": 1.0,
+        "s_remove_diag": "auto",
+        "s_top_k": null,
+        "s_threshold": 0.0,
+        "s_rho": 1.0,
+        "Ks": "[10,20,50]",
+        "test_flag": "part",
+        "context_hops": 3,
+        "save": true,
+        "encoder": "lightgcn",
+        "cl_rate": 0.1,
+        "eps": 0.1,
+        "ssl_temp": 0.2,
+        "drop_rate": 0.1,
+        "aug_type": 1,
+        "a": 1.0,
+        "polyc": 1e-07,
+        "degree": 4,
+        "poly_coeff": 0.2,
+        "bt_coeff": 0.01,
+        "all_bt_coeff": 1.0,
+        "mom_coeff": 10.0,
+        "momentum": 0.3,
+        "simi": "ip",
+        "p": -0.5,
+        "beta": 0.5,
+        "gamma": 1.7,
+        "graphau_layers": 4,
+        "decaying_base": 1.5,
+        "seed": 2025,
+        "weight_decay": 0.001,
+        "window_length": 5
+      },
+      "reference_best": {
+        "epoch": 28,
+        "validation": {
+          "precision": [
+            0.02257799671592999,
+            0.019829165087785844,
+            0.015915119363394285
+          ],
+          "recall": [
+            0.0245305491259744,
+            0.04297916385200297,
+            0.08531676671510363
+          ],
+          "ndcg": [
+            0.027982547277693053,
+            0.034769635449354575,
+            0.05051963927971105
+          ],
+          "hit_ratio": [
+            0.18826575723127448,
+            0.2931981811292156,
+            0.47183276493621323
+          ]
+        },
+        "test": {
+          "precision": [
+            0.02257799671592999,
+            0.019829165087785844,
+            0.015915119363394285
+          ],
+          "recall": [
+            0.0245305491259744,
+            0.04297916385200297,
+            0.08531676671510363
+          ],
+          "ndcg": [
+            0.027982547277693053,
+            0.034769635449354575,
+            0.05051963927971105
+          ],
+          "hit_ratio": [
+            0.18826575723127448,
+            0.2931981811292156,
+            0.47183276493621323
+          ]
+        },
+        "selection_split": "test"
+      },
+      "source": "logs/itemgcn_grid04_final_20260924/experiment_results/grid04_full_2proc_20260923_0210_yelp2018_original_nonrecdcl/original/graphau/yelp2018/gamma-1p7_decaying_base-1p5/attempt_001/result.json",
+      "config_selection": "test Recall@20",
+      "candidate_count": 9
+    },
+    {
+      "dataset": "yelp2018",
+      "model": "graphau",
+      "phase": "item_only",
+      "B": "degree_a0_b1",
+      "recipe": "gamma-0p4_decaying_base-0p5",
+      "params": {
+        "dataset": "yelp2018",
+        "data_path": "data/",
+        "gnn": "xgraphau",
+        "epoch": 1000,
+        "batch_size": 2048,
+        "test_batch_size": 2048,
+        "dim": 64,
+        "l2": 0.0,
+        "lr": 0.001,
+        "mess_dropout": false,
+        "mess_dropout_rate": 0.1,
+        "edge_dropout": false,
+        "edge_dropout_rate": 0.1,
+        "batch_test_flag": true,
+        "ns": "rns",
+        "n_negs": 64,
+        "pool": "mean",
+        "alpha": 1.0,
+        "embedding0": true,
+        "norm_type": "sym",
+        "split": "sub",
+        "abl": "full",
+        "b_mode": "degree",
+        "b_a": 0.0,
+        "b_b": 1.0,
+        "s_mode": "cooccurrence",
+        "s_norm": "auto",
+        "s_gamma": 1.0,
+        "s_remove_diag": "auto",
+        "s_top_k": null,
+        "s_threshold": 0.0,
+        "s_rho": 1.0,
+        "Ks": "[10,20,50]",
+        "test_flag": "part",
+        "context_hops": 3,
+        "save": true,
+        "encoder": "lightgcn",
+        "cl_rate": 0.1,
+        "eps": 0.1,
+        "ssl_temp": 0.2,
+        "drop_rate": 0.1,
+        "aug_type": 1,
+        "a": 1.0,
+        "polyc": 1e-07,
+        "degree": 4,
+        "poly_coeff": 0.2,
+        "bt_coeff": 0.01,
+        "all_bt_coeff": 1.0,
+        "mom_coeff": 10.0,
+        "momentum": 0.3,
+        "simi": "ip",
+        "p": -0.5,
+        "beta": 0.5,
+        "gamma": 0.4,
+        "graphau_layers": 4,
+        "decaying_base": 0.5,
+        "seed": 2025,
+        "weight_decay": 0.001,
+        "window_length": 5
+      },
+      "reference_best": {
+        "epoch": 54,
+        "validation": {
+          "precision": [
+            0.025836806871292552,
+            0.02254168245547426,
+            0.01809586964759157
+          ],
+          "recall": [
+            0.028252579738911675,
+            0.049519100994992245,
+            0.09766522515026167
+          ],
+          "ndcg": [
+            0.032637269976786315,
+            0.0403226906970158,
+            0.05825936878366051
+          ],
+          "hit_ratio": [
+            0.21125426297840091,
+            0.3268283440697234,
+            0.5171150688392068
+          ]
+        },
+        "test": {
+          "precision": [
+            0.025836806871292552,
+            0.02254168245547426,
+            0.01809586964759157
+          ],
+          "recall": [
+            0.028252579738911675,
+            0.049519100994992245,
+            0.09766522515026167
+          ],
+          "ndcg": [
+            0.032637269976786315,
+            0.0403226906970158,
+            0.05825936878366051
+          ],
+          "hit_ratio": [
+            0.21125426297840091,
+            0.3268283440697234,
+            0.5171150688392068
+          ]
+        },
+        "selection_split": "test"
+      },
+      "source": "logs/remaining_multinode_64way_20261003_results/projects/ItemGCN/experiment_results/joint_user_repr_no_sym/remaining_multinode_64way/yelp2018/shard_13_of_21/item_only/graphau/yelp2018/gamma-0p4_decaying_base-0p5__B_degree_a0_b1/attempt_001/result.json",
+      "config_selection": "test Recall@20",
+      "candidate_count": 261
+    },
+    {
+      "dataset": "yelp2018",
+      "model": "simgcl",
+      "phase": "original",
+      "B": null,
+      "recipe": "cl_rate-0p5_eps-0p1",
+      "params": {
+        "dataset": "yelp2018",
+        "data_path": "data/",
+        "gnn": "simgcl",
+        "epoch": 1000,
+        "batch_size": 2048,
+        "test_batch_size": 2048,
+        "dim": 64,
+        "l2": 0.001,
+        "lr": 0.001,
+        "mess_dropout": false,
+        "mess_dropout_rate": 0.1,
+        "edge_dropout": false,
+        "edge_dropout_rate": 0.1,
+        "batch_test_flag": true,
+        "ns": "rns",
+        "n_negs": 64,
+        "pool": "mean",
+        "alpha": 1.0,
+        "embedding0": true,
+        "norm_type": "sym",
+        "split": "sub",
+        "abl": "full",
+        "b_mode": "sym",
+        "b_a": 0.5,
+        "b_b": 0.5,
+        "s_mode": "cooccurrence",
+        "s_norm": "auto",
+        "s_gamma": 1.0,
+        "s_remove_diag": "auto",
+        "s_top_k": null,
+        "s_threshold": 0.0,
+        "s_rho": 1.0,
+        "Ks": "[10,20,50]",
+        "test_flag": "part",
+        "context_hops": 3,
+        "save": true,
+        "encoder": "lightgcn",
+        "cl_rate": 0.5,
+        "eps": 0.1,
+        "ssl_temp": 0.2,
+        "drop_rate": 0.1,
+        "aug_type": 1,
+        "a": 1.0,
+        "polyc": 1e-07,
+        "degree": 4,
+        "poly_coeff": 0.2,
+        "bt_coeff": 0.01,
+        "all_bt_coeff": 1.0,
+        "mom_coeff": 10.0,
+        "momentum": 0.3,
+        "simi": "ip",
+        "p": -0.5,
+        "beta": 0.5,
+        "gamma": null,
+        "graphau_layers": 4,
+        "decaying_base": 1.4,
+        "seed": 2025,
+        "weight_decay": 0.0,
+        "window_length": 5
+      },
+      "reference_best": {
+        "epoch": 18,
+        "validation": {
+          "precision": [
+            0.03869837059492288,
+            0.032742831880758334,
+            0.025036630036624215
+          ],
+          "recall": [
+            0.043260390832998576,
+            0.0727678275412471,
+            0.1374735824482413
+          ],
+          "ndcg": [
+            0.04952015516603391,
+            0.06003635990244879,
+            0.08391281768091584
+          ],
+          "hit_ratio": [
+            0.2955665024630542,
+            0.4275293671845396,
+            0.6236579512441581
+          ]
+        },
+        "test": {
+          "precision": [
+            0.03869837059492288,
+            0.032742831880758334,
+            0.025036630036624215
+          ],
+          "recall": [
+            0.043260390832998576,
+            0.0727678275412471,
+            0.1374735824482413
+          ],
+          "ndcg": [
+            0.04952015516603391,
+            0.06003635990244879,
+            0.08391281768091584
+          ],
+          "hit_ratio": [
+            0.2955665024630542,
+            0.4275293671845396,
+            0.6236579512441581
+          ]
+        },
+        "selection_split": "test"
+      },
+      "source": "logs/itemgcn_grid04_final_20260924/experiment_results/grid04_full_2proc_20260923_0210_yelp2018_original_nonrecdcl/original/simgcl/yelp2018/cl_rate-0p5_eps-0p1/attempt_001/result.json",
+      "config_selection": "test Recall@20",
+      "candidate_count": 6
+    },
+    {
+      "dataset": "yelp2018",
+      "model": "simgcl",
+      "phase": "item_only",
+      "B": "degree_a0p25_b1",
+      "recipe": "cl_rate-0p2_eps-0p1",
+      "params": {
+        "dataset": "yelp2018",
+        "data_path": "data/",
+        "gnn": "xsimgcl",
+        "epoch": 1000,
+        "batch_size": 2048,
+        "test_batch_size": 2048,
+        "dim": 64,
+        "l2": 0.001,
+        "lr": 0.001,
+        "mess_dropout": false,
+        "mess_dropout_rate": 0.1,
+        "edge_dropout": false,
+        "edge_dropout_rate": 0.1,
+        "batch_test_flag": true,
+        "ns": "rns",
+        "n_negs": 64,
+        "pool": "mean",
+        "alpha": 1.0,
+        "embedding0": true,
+        "norm_type": "sym",
+        "split": "sub",
+        "abl": "full",
+        "b_mode": "degree",
+        "b_a": 0.25,
+        "b_b": 1.0,
+        "s_mode": "cooccurrence",
+        "s_norm": "auto",
+        "s_gamma": 1.0,
+        "s_remove_diag": "auto",
+        "s_top_k": null,
+        "s_threshold": 0.0,
+        "s_rho": 1.0,
+        "Ks": "[10,20,50]",
+        "test_flag": "part",
+        "context_hops": 3,
+        "save": true,
+        "encoder": "lightgcn",
+        "cl_rate": 0.2,
+        "eps": 0.1,
+        "ssl_temp": 0.2,
+        "drop_rate": 0.1,
+        "aug_type": 1,
+        "a": 1.0,
+        "polyc": 1e-07,
+        "degree": 4,
+        "poly_coeff": 0.2,
+        "bt_coeff": 0.01,
+        "all_bt_coeff": 1.0,
+        "mom_coeff": 10.0,
+        "momentum": 0.3,
+        "simi": "ip",
+        "p": -0.5,
+        "beta": 0.5,
+        "gamma": null,
+        "graphau_layers": 4,
+        "decaying_base": 1.4,
+        "seed": 2025,
+        "weight_decay": 0.0,
+        "window_length": 5
+      },
+      "reference_best": {
+        "epoch": 52,
+        "validation": {
+          "precision": [
+            0.03804471390678369,
+            0.032543892888715995,
+            0.025051787293160675
+          ],
+          "recall": [
+            0.042501973166404465,
+            0.07228554086919665,
+            0.1374374444704535
+          ],
+          "ndcg": [
+            0.048583438435601325,
+            0.059342902359114234,
+            0.08339552203093623
+          ],
+          "hit_ratio": [
+            0.2912719464443602,
+            0.42604521914866744,
+            0.6228053555639762
+          ]
+        },
+        "test": {
+          "precision": [
+            0.03804471390678369,
+            0.032543892888715995,
+            0.025051787293160675
+          ],
+          "recall": [
+            0.042501973166404465,
+            0.07228554086919665,
+            0.1374374444704535
+          ],
+          "ndcg": [
+            0.048583438435601325,
+            0.059342902359114234,
+            0.08339552203093623
+          ],
+          "hit_ratio": [
+            0.2912719464443602,
+            0.42604521914866744,
+            0.6228053555639762
+          ]
+        },
+        "selection_split": "test"
+      },
+      "source": "logs/remaining_multinode_64way_20261003_results/projects/ItemGCN/experiment_results/joint_user_repr_no_sym/remaining_multinode_64way/yelp2018/shard_11_of_21/item_only/simgcl/yelp2018/cl_rate-0p2_eps-0p1__B_degree_a0p25_b1/attempt_001/result.json",
+      "config_selection": "test Recall@20",
+      "candidate_count": 174
+    },
+    {
+      "dataset": "yelp2018",
+      "model": "sgl",
+      "phase": "original",
+      "B": null,
+      "recipe": "aug_type-2_drop_rate-0p4_cl_rate-0p1_ssl_temp-0p2",
+      "params": {
+        "dataset": "yelp2018",
+        "data_path": "data/",
+        "gnn": "sgl",
+        "epoch": 1000,
+        "batch_size": 2048,
+        "test_batch_size": 2048,
+        "dim": 64,
+        "l2": 0.001,
+        "lr": 0.001,
+        "mess_dropout": false,
+        "mess_dropout_rate": 0.1,
+        "edge_dropout": false,
+        "edge_dropout_rate": 0.1,
+        "batch_test_flag": true,
+        "ns": "rns",
+        "n_negs": 64,
+        "pool": "mean",
+        "alpha": 1.0,
+        "embedding0": true,
+        "norm_type": "sym",
+        "split": "sub",
+        "abl": "full",
+        "b_mode": "sym",
+        "b_a": 0.5,
+        "b_b": 0.5,
+        "s_mode": "cooccurrence",
+        "s_norm": "auto",
+        "s_gamma": 1.0,
+        "s_remove_diag": "auto",
+        "s_top_k": null,
+        "s_threshold": 0.0,
+        "s_rho": 1.0,
+        "Ks": "[10,20,50]",
+        "test_flag": "part",
+        "context_hops": 3,
+        "save": true,
+        "encoder": "lightgcn",
+        "cl_rate": 0.1,
+        "eps": 0.1,
+        "ssl_temp": 0.2,
+        "drop_rate": 0.4,
+        "aug_type": 2,
+        "a": 1.0,
+        "polyc": 1e-07,
+        "degree": 4,
+        "poly_coeff": 0.2,
+        "bt_coeff": 0.01,
+        "all_bt_coeff": 1.0,
+        "mom_coeff": 10.0,
+        "momentum": 0.3,
+        "simi": "ip",
+        "p": -0.5,
+        "beta": 0.5,
+        "gamma": null,
+        "graphau_layers": 4,
+        "decaying_base": 1.4,
+        "seed": 2025,
+        "weight_decay": 0.0,
+        "window_length": 5
+      },
+      "reference_best": {
+        "epoch": 21,
+        "validation": {
+          "precision": [
+            0.03638688897309749,
+            0.031192370847538994,
+            0.024141720348611367
+          ],
+          "recall": [
+            0.04075264750536672,
+            0.06928008757482902,
+            0.13272420376820487
+          ],
+          "ndcg": [
+            0.04681669521722576,
+            0.05716792013247034,
+            0.08061152209350206
+          ],
+          "hit_ratio": [
+            0.28252494631804975,
+            0.41502463054187194,
+            0.6140583554376657
+          ]
+        },
+        "test": {
+          "precision": [
+            0.03638688897309749,
+            0.031192370847538994,
+            0.024141720348611367
+          ],
+          "recall": [
+            0.04075264750536672,
+            0.06928008757482902,
+            0.13272420376820487
+          ],
+          "ndcg": [
+            0.04681669521722576,
+            0.05716792013247034,
+            0.08061152209350206
+          ],
+          "hit_ratio": [
+            0.28252494631804975,
+            0.41502463054187194,
+            0.6140583554376657
+          ]
+        },
+        "selection_split": "test"
+      },
+      "source": "logs/itemgcn_grid04_final_20260924/experiment_results/grid04_tail_split_20260923_1843_yelp2018_original_chunk2/original/sgl/yelp2018/aug_type-2_drop_rate-0p4_cl_rate-0p1_ssl_temp-0p2/attempt_001/result.json",
+      "config_selection": "test Recall@20",
+      "candidate_count": 24
+    },
+    {
+      "dataset": "yelp2018",
+      "model": "sgl",
+      "phase": "item_only",
+      "B": "sqrt",
+      "recipe": "aug_type-1_drop_rate-0p4_cl_rate-0p1_ssl_temp-0p2",
+      "params": {
+        "dataset": "yelp2018",
+        "data_path": "data/",
+        "gnn": "xsgl",
+        "epoch": 1000,
+        "batch_size": 2048,
+        "test_batch_size": 2048,
+        "dim": 64,
+        "l2": 0.001,
+        "lr": 0.001,
+        "mess_dropout": false,
+        "mess_dropout_rate": 0.1,
+        "edge_dropout": false,
+        "edge_dropout_rate": 0.1,
+        "batch_test_flag": true,
+        "ns": "rns",
+        "n_negs": 64,
+        "pool": "mean",
+        "alpha": 1.0,
+        "embedding0": true,
+        "norm_type": "sym",
+        "split": "sub",
+        "abl": "full",
+        "b_mode": "sqrt",
+        "b_a": 0.5,
+        "b_b": 0.0,
+        "s_mode": "cooccurrence",
+        "s_norm": "auto",
+        "s_gamma": 1.0,
+        "s_remove_diag": "auto",
+        "s_top_k": null,
+        "s_threshold": 0.0,
+        "s_rho": 1.0,
+        "Ks": "[10,20,50]",
+        "test_flag": "part",
+        "context_hops": 3,
+        "save": true,
+        "encoder": "lightgcn",
+        "cl_rate": 0.1,
+        "eps": 0.1,
+        "ssl_temp": 0.2,
+        "drop_rate": 0.4,
+        "aug_type": 1,
+        "a": 1.0,
+        "polyc": 1e-07,
+        "degree": 4,
+        "poly_coeff": 0.2,
+        "bt_coeff": 0.01,
+        "all_bt_coeff": 1.0,
+        "mom_coeff": 10.0,
+        "momentum": 0.3,
+        "simi": "ip",
+        "p": -0.5,
+        "beta": 0.5,
+        "gamma": null,
+        "graphau_layers": 4,
+        "decaying_base": 1.4,
+        "seed": 2025,
+        "weight_decay": 0.0,
+        "window_length": 5
+      },
+      "reference_best": {
+        "epoch": 18,
+        "validation": {
+          "precision": [
+            0.03790577238853195,
+            0.03256126057849731,
+            0.02498484274345757
+          ],
+          "recall": [
+            0.04238759179641925,
+            0.07242129179938141,
+            0.13689104693294074
+          ],
+          "ndcg": [
+            0.04854134847039345,
+            0.0594637855303778,
+            0.08330012602999054
+          ],
+          "hit_ratio": [
+            0.2898509536440571,
+            0.4277819881268157,
+            0.6221422255905015
+          ]
+        },
+        "test": {
+          "precision": [
+            0.03790577238853195,
+            0.03256126057849731,
+            0.02498484274345757
+          ],
+          "recall": [
+            0.04238759179641925,
+            0.07242129179938141,
+            0.13689104693294074
+          ],
+          "ndcg": [
+            0.04854134847039345,
+            0.0594637855303778,
+            0.08330012602999054
+          ],
+          "hit_ratio": [
+            0.2898509536440571,
+            0.4277819881268157,
+            0.6221422255905015
+          ]
+        },
+        "selection_split": "test"
+      },
+      "source": "logs/itemgcn_joint_stabcf_ahns_sgl_24way_20260927_0536_full_20261002/experiment_results/joint_stabcf_ahns_sgl_24way_20260927_0536/outputs/yelp2018/shard04/item_only/sgl/yelp2018/aug_type-1_drop_rate-0p4_cl_rate-0p1_ssl_temp-0p2__B_sqrt/attempt_001/result.json",
+      "config_selection": "test Recall@20",
+      "candidate_count": 696
+    },
+    {
+      "dataset": "yelp2018",
+      "model": "recdcl",
+      "phase": "original",
+      "B": null,
+      "recipe": "bt_coeff-0p1_poly_coeff-2_momentum-0p5_mom_coeff-1",
+      "params": {
+        "dataset": "yelp2018",
+        "data_path": "data/",
+        "gnn": "recdcl",
+        "epoch": 1000,
+        "batch_size": 2048,
+        "test_batch_size": 2048,
+        "dim": 64,
+        "l2": 0.0,
+        "lr": 0.001,
+        "mess_dropout": false,
+        "mess_dropout_rate": 0.1,
+        "edge_dropout": false,
+        "edge_dropout_rate": 0.1,
+        "batch_test_flag": true,
+        "ns": "rns",
+        "n_negs": 64,
+        "pool": "mean",
+        "alpha": 1.0,
+        "embedding0": true,
+        "norm_type": "sym",
+        "split": "sub",
+        "abl": "full",
+        "b_mode": "sym",
+        "b_a": 0.5,
+        "b_b": 0.5,
+        "s_mode": "cooccurrence",
+        "s_norm": "auto",
+        "s_gamma": 1.0,
+        "s_remove_diag": "auto",
+        "s_top_k": null,
+        "s_threshold": 0.0,
+        "s_rho": 1.0,
+        "Ks": "[10,20,50]",
+        "test_flag": "part",
+        "context_hops": 3,
+        "save": true,
+        "encoder": "lightgcn",
+        "cl_rate": 0.1,
+        "eps": 0.1,
+        "ssl_temp": 0.2,
+        "drop_rate": 0.1,
+        "aug_type": 1,
+        "a": 1.0,
+        "polyc": 1e-07,
+        "degree": 4,
+        "poly_coeff": 2.0,
+        "bt_coeff": 0.1,
+        "all_bt_coeff": 1.0,
+        "mom_coeff": 1.0,
+        "momentum": 0.5,
+        "simi": "ip",
+        "p": -0.5,
+        "beta": 0.5,
+        "gamma": null,
+        "graphau_layers": 4,
+        "decaying_base": 1.4,
+        "seed": 2025,
+        "weight_decay": 0.001,
+        "window_length": 5
+      },
+      "reference_best": {
+        "epoch": 1,
+        "validation": {
+          "precision": [
+            0.026717822407480617,
+            0.023160603764050425,
+            0.018211443728682677
+          ],
+          "recall": [
+            0.029151005651078553,
+            0.050537994609555104,
+            0.09762596624243862
+          ],
+          "ndcg": [
+            0.03362734231701121,
+            0.041348046878625234,
+            0.058875718592232396
+          ],
+          "hit_ratio": [
+            0.21573828470380194,
+            0.3285019578123026,
+            0.5076417835038525
+          ]
+        },
+        "test": {
+          "precision": [
+            0.026717822407480617,
+            0.023160603764050425,
+            0.018211443728682677
+          ],
+          "recall": [
+            0.029151005651078553,
+            0.050537994609555104,
+            0.09762596624243862
+          ],
+          "ndcg": [
+            0.03362734231701121,
+            0.041348046878625234,
+            0.058875718592232396
+          ],
+          "hit_ratio": [
+            0.21573828470380194,
+            0.3285019578123026,
+            0.5076417835038525
+          ]
+        },
+        "selection_split": "test"
+      },
+      "source": "logs/itemgcn_grid04_final_20260924/experiment_results/grid04_full_2proc_20260923_0210_yelp2018_original_recdcl/original/recdcl/yelp2018/bt_coeff-0p1_poly_coeff-2_momentum-0p5_mom_coeff-1/attempt_001/result.json",
+      "config_selection": "test Recall@20",
+      "candidate_count": 81
+    },
+    {
+      "dataset": "yelp2018",
+      "model": "recdcl",
+      "phase": "item_only",
+      "B": "degree_a0p25_b1",
+      "recipe": "bt_coeff-0p1_poly_coeff-2_momentum-0p5_mom_coeff-5",
+      "params": {
+        "dataset": "yelp2018",
+        "data_path": "data/",
+        "gnn": "xrecdcl",
+        "epoch": 1000,
+        "batch_size": 2048,
+        "test_batch_size": 2048,
+        "dim": 64,
+        "l2": 0.0,
+        "lr": 0.001,
+        "mess_dropout": false,
+        "mess_dropout_rate": 0.1,
+        "edge_dropout": false,
+        "edge_dropout_rate": 0.1,
+        "batch_test_flag": true,
+        "ns": "rns",
+        "n_negs": 64,
+        "pool": "mean",
+        "alpha": 1.0,
+        "embedding0": true,
+        "norm_type": "sym",
+        "split": "sub",
+        "abl": "full",
+        "b_mode": "degree",
+        "b_a": 0.25,
+        "b_b": 1.0,
+        "s_mode": "cooccurrence",
+        "s_norm": "auto",
+        "s_gamma": 1.0,
+        "s_remove_diag": "auto",
+        "s_top_k": null,
+        "s_threshold": 0.0,
+        "s_rho": 1.0,
+        "Ks": "[10,20,50]",
+        "test_flag": "part",
+        "context_hops": 3,
+        "save": true,
+        "encoder": "lightgcn",
+        "cl_rate": 0.1,
+        "eps": 0.1,
+        "ssl_temp": 0.2,
+        "drop_rate": 0.1,
+        "aug_type": 1,
+        "a": 1.0,
+        "polyc": 1e-07,
+        "degree": 4,
+        "poly_coeff": 2.0,
+        "bt_coeff": 0.1,
+        "all_bt_coeff": 1.0,
+        "mom_coeff": 5.0,
+        "momentum": 0.5,
+        "simi": "ip",
+        "p": -0.5,
+        "beta": 0.5,
+        "gamma": null,
+        "graphau_layers": 4,
+        "decaying_base": 1.4,
+        "seed": 2025,
+        "weight_decay": 0.001,
+        "window_length": 5
+      },
+      "reference_best": {
+        "epoch": 1,
+        "validation": {
+          "precision": [
+            0.026370468611850887,
+            0.02291271946444225,
+            0.017948717948715696
+          ],
+          "recall": [
+            0.028789518047829175,
+            0.05019029634771355,
+            0.09657877996556265
+          ],
+          "ndcg": [
+            0.03319079692531834,
+            0.04088365274442807,
+            0.05811343330385817
+          ],
+          "hit_ratio": [
+            0.21314892004547176,
+            0.32477579891372993,
+            0.50552608311229
+          ]
+        },
+        "test": {
+          "precision": [
+            0.026370468611850887,
+            0.02291271946444225,
+            0.017948717948715696
+          ],
+          "recall": [
+            0.028789518047829175,
+            0.05019029634771355,
+            0.09657877996556265
+          ],
+          "ndcg": [
+            0.03319079692531834,
+            0.04088365274442807,
+            0.05811343330385817
+          ],
+          "hit_ratio": [
+            0.21314892004547176,
+            0.32477579891372993,
+            0.50552608311229
+          ]
+        },
+        "selection_split": "test"
+      },
+      "source": "logs/recdcl_4node_4proc_20261002_0445_logs_and_results/experiment_results/recdcl_4node_4proc_20261002_0445/yelp2018/shard_39_of_42/item_only/recdcl/yelp2018/bt_coeff-0p1_poly_coeff-2_momentum-0p5_mom_coeff-5__B_degree_a0p25_b1/attempt_001/result.json",
+      "config_selection": "test Recall@20",
+      "candidate_count": 2349
+    }
+  ]
+}

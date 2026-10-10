@@ -535,7 +535,11 @@ def build_norm_adj2(data_cf, norm_type='sym', split='sub'):
 
 
 def load_data(model_args):
-    global args, dataset
+    global args, dataset, train_user_set, valid_user_set, test_user_set
+    # Independent checkpoint loads in one process must not accumulate old histories.
+    train_user_set = defaultdict(list)
+    valid_user_set = defaultdict(list)
+    test_user_set = defaultdict(list)
     args = model_args
     dataset = args.dataset
     directory = args.data_path + dataset + '/'

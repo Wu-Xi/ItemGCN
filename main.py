@@ -9,9 +9,10 @@ from utils.evaluate import test
 from utils.helper import early_stopping, get_local_time
 from utils.data_loader import load_data
 from copy import deepcopy
-from pathlib import Path
 import pdb
 from utils.experiment_log import ExperimentLog
+from utils.model_factory import build_model
+from utils.checkpoint import BestCheckpoint
 
 def prepare_train_sets(histories, catalog_size):
     if catalog_size <= 0:
@@ -125,27 +126,8 @@ if __name__ == '__main__':
     n_users = n_params['n_users']
 
     """define model"""
-    if args.gnn == 'lightgcn':
-        from modules.LightGCN import LightGCN
-        model = LightGCN(n_params, args, norm_mat).to(device)
-    elif args.gnn == 'igcn':
-        from modules.LightGCN_StabCF import StabCF2
-        model = StabCF2(n_params, args, norm_mat, si_norm_mat).to(device)
-    elif args.gnn in ('simgcl', 'xsimgcl', 'sgl', 'xsgl', 'recdcl', 'xrecdcl',
-                      'xlightgcn', 'ahns', 'xahns', 'directau', 'xdirectau', 'graphau', 'xgraphau'):
-        from modules.LightGCN import (SimGCL, XSimGCL, SGL, XSGL, RecDCL, XRecDCL,
-                                     XLightGCN, AHNS, XAHNS, DirectAU, XDirectAU, GraphAU, XGraphAU)
-        models = dict(simgcl=SimGCL, xsimgcl=XSimGCL, sgl=SGL, xsgl=XSGL,
-                      recdcl=RecDCL, xrecdcl=XRecDCL, xlightgcn=XLightGCN, ahns=AHNS,
-                      xahns=XAHNS, directau=DirectAU, xdirectau=XDirectAU, graphau=GraphAU, xgraphau=XGraphAU)
-        model_args = [n_params, args, norm_mat]
-        if args.gnn.startswith('x'):
-            model_args.append(si_norm_mat)
-        if args.gnn in ('sgl', 'xsgl'):
-            model_args.append(sp_matrix['train_sp_mat'])
-        model = models[args.gnn](*model_args).to(device)
-    else:
-        raise NotImplementedError("unknown gnn type: " + args.gnn)
+    model = build_model(n_params, args, norm_mat, si_norm_mat, sp_matrix['train_sp_mat']).to(device)
+    checkpoint = BestCheckpoint(args, n_params) if args.save else None
 
     requires_negatives = getattr(model, 'requires_negative_sampling', True)
     negative_count = getattr(model, 'negative_sample_count', args.n_negs)
@@ -192,7 +174,7 @@ if __name__ == '__main__':
             train_res.field_names = ["Epoch", "training time(s)", "tesing time(s)", "Loss", "recall", "ndcg", "precision", "hit_ratio"]
             model.eval()
             test_s_t = time()
-            test_ret = test(model, user_dict, sp_matrix, n_params, valid_pre, test_pre, mode='test')
+            test_ret = test(model, user_dict, sp_matrix, n_params, valid_pre, test_pre, mode='test', evaluation_args=args)
             test_e_t = time()
             test_result = [epoch, int(train_e_t - train_s_t), int(test_e_t - test_s_t), round(loss.item(), 2), *[np.round(test_ret[k], 5).tolist() for k in ('recall', 'ndcg', 'precision', 'hit_ratio')]]
             train_res.add_row(test_result)
@@ -201,7 +183,7 @@ if __name__ == '__main__':
                 valid_ret = test_ret
             else:
                 test_s_t = time()
-                valid_ret = test(model, user_dict, sp_matrix, n_params, valid_pre, test_pre, mode='valid')
+                valid_ret = test(model, user_dict, sp_matrix, n_params, valid_pre, test_pre, mode='valid', evaluation_args=args)
                 test_e_t = time()
                 train_res.add_row(
                     [epoch, int(train_e_t - train_s_t), int(test_e_t - test_s_t), round(loss.item(), 2), *[np.round(valid_ret[k], 5).tolist() for k in ('recall', 'ndcg', 'precision', 'hit_ratio')]])
@@ -218,9 +200,9 @@ if __name__ == '__main__':
             # save weight
             if improved:
                 best_test_result = deepcopy(test_result)
-                if args.save:
-                    Path(args.out_dir).mkdir(parents=True, exist_ok=True)
-                    torch.save(model.state_dict(), Path(args.out_dir) / 'model_.ckpt')
+                if checkpoint is not None:
+                    checkpoint.save(model, epoch, valid_ret, test_ret,
+                                    'validation' if user_dict['valid_user_set'] is not None else 'test')
             if should_stop:
                 break
 
