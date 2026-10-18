@@ -1,4 +1,4 @@
-"""Evaluate fixed Original/Item-only checkpoints by training user activity."""
+"""Evaluate fixed Original/Item-only checkpoints by selectable training-user-activity bins."""
 import argparse
 import ast
 import csv
@@ -82,7 +82,8 @@ def worker(opts):
         opts.checkpoint, data_path=opts.data_path, cuda=not opts.cpu,
         gpu_id=opts.gpu_id, fp16_manifest=opts.fp16_manifest)
     user_ids, metrics = evaluate_users(model, data, opts.ks, opts.batch_size)
-    groups, degrees, stats = partition_users(user_ids, data[1]['train_user_set'])
+    groups, degrees, stats = partition_users(user_ids, data[1]['train_user_set'],
+                                           method=opts.group_method, thresholds=opts.degree_thresholds)
     order = np.argsort(user_ids)
     overall = {m: values.mean(axis=0).tolist() for m, values in metrics.items()}
     recorded_ks = ast.literal_eval(meta['config']['Ks'])
@@ -93,7 +94,8 @@ def worker(opts):
     max_drift = max(comparable) if comparable else None
     result = dict(checkpoint=str(opts.checkpoint.resolve()), checkpoint_sha256=sha256(opts.checkpoint),
                   epoch=meta['best']['epoch'], data_files=meta['data_files'], ks=opts.ks,
-                  partition='test users sorted by (distinct train degree, numeric ID); numpy.array_split(4)',
+                  partition=opts.group_method, group_method=opts.group_method,
+                  degree_thresholds=list(opts.degree_thresholds) if opts.group_method == 'fixed' else None,
                   groups=stats, overall=overall, group_metrics=aggregate(metrics, groups),
                   recorded_best=meta['best'], difference_from_source_fp32=drift,
                   max_absolute_recorded_difference=max_drift,
@@ -124,6 +126,10 @@ def summarize(opts, plans):
         for phase in PHASES:
             directory = opts.output_root / dataset / model / phase
             result = read_json(directory / 'evaluation.json')
+            expected_thresholds = list(opts.degree_thresholds) if opts.group_method == 'fixed' else None
+            if (result['ks'] != opts.ks or result['group_method'] != opts.group_method
+                    or result['degree_thresholds'] != expected_thresholds):
+                raise ValueError('Saved evaluation grouping/cutoffs differ: ' + str(directory))
             if sha256(directory / 'users.npz') != result['users_npz_sha256']:
                 raise ValueError('Numeric artifact checksum mismatch: ' + str(directory))
             with np.load(directory / 'users.npz', allow_pickle=False) as archive:
@@ -137,50 +143,72 @@ def summarize(opts, plans):
                 raise ValueError('Paired user partition differs: ' + key)
         if results['original']['data_files'] != results['item_only']['data_files']:
             raise ValueError('Paired data files differ')
+        if results['original']['groups'] != results['item_only']['groups']:
+            raise ValueError('Paired group statistics differ')
         pair_rows = paired_gains(a, b, a['groups'], opts.ks)
         for row in pair_rows:
             degree_stats = results['original']['groups'][row['group'] - 1]
             row.update(dataset=dataset, model=model,
                        degree_min=degree_stats['degree_min'], degree_max=degree_stats['degree_max'],
+                       degree_range=degree_stats['degree_range'],
                        review_required=any(r['review_required'] for r in results.values()))
         rows.extend(pair_rows)
         for metric in METRICS:
             for k in opts.ks:
                 selected = [r for r in pair_rows if r['metric'] == metric and r['k'] == k]
-                best = max(r['absolute_gain'] for r in selected)
-                rel = [r for r in selected if r['relative_gain_pct'] is not None]
+                valid = [r for r in selected if r['absolute_gain'] is not None]
+                best = max((r['absolute_gain'] for r in valid), default=None)
+                rel = [r for r in valid if r['relative_gain_pct'] is not None]
                 best_relative = max((r['relative_gain_pct'] for r in rel), default=None)
-                largest = [r['group'] for r in selected if np.isclose(r['absolute_gain'], best, rtol=0, atol=1e-12)]
+                largest = [r['group'] for r in valid if np.isclose(r['absolute_gain'], best, rtol=0, atol=1e-12)]
                 summaries.append(dict(dataset=dataset, model=model, metric=metric, k=k,
                                       largest_absolute_gain_groups=largest,
                                       largest_relative_gain_groups=[r['group'] for r in rel if np.isclose(
                                           r['relative_gain_pct'], best_relative, rtol=0, atol=1e-12)],
-                                      any_positive_gain=best > 0,
+                                      any_positive_gain=best is not None and best > 0,
                                       overall_gain=sum(r['overall_gain_contribution'] for r in selected),
-                                      g1_minus_g4_absolute_gain=selected[0]['absolute_gain'] - selected[3]['absolute_gain'],
+                                      g1_minus_g4_absolute_gain=(selected[0]['absolute_gain'] - selected[3]['absolute_gain']
+                                                                 if selected[0]['absolute_gain'] is not None
+                                                                 and selected[3]['absolute_gain'] is not None else None),
                                       review_required=selected[0]['review_required']))
-    write_json(opts.output_root / 'summary.json', dict(rows=rows, comparisons=summaries,
+    write_json(opts.output_root / 'summary.json', dict(group_method=opts.group_method,
+                                                      degree_thresholds=(list(opts.degree_thresholds)
+                                                          if opts.group_method == 'fixed' else None),
+                                                      ks=opts.ks, rows=rows, comparisons=summaries,
                                                       checkpoints_needing_review=flagged))
     with (opts.output_root / 'group_gains.csv').open('w', newline='', encoding='utf-8-sig') as stream:
         writer = csv.DictWriter(stream, fieldnames=list(rows[0]))
         writer.writeheader()
         writer.writerows(rows)
     report = ['# User activity analysis', '',
-              'G1 has the fewest distinct training interactions; G4 has the most.',
+              f'Grouping method: {opts.group_method}; fixed degree thresholds: '
+              f'{list(opts.degree_thresholds) if opts.group_method == "fixed" else "not applicable"}.',
+              'G1–G4 are ordered by increasing distinct training degree; some groups may be empty.',
               'Gains compare Item-only minus Original within the same dataset/backbone.',
               'These are descriptive results for fixed checkpoints, not multi-seed significance claims.',
               'A positive G1−G4 gain difference means a larger absolute benefit for G1.', '',
               '| Dataset | Model | Metric | Largest absolute gain group | Overall gain | G1−G4 gain | Review |',
               '|---|---|---|---|---:|---:|---|']
+    def show(value):
+        return f'{value:+.6f}' if value is not None else 'N/A (empty group)'
+
     for item in summaries:
         if item['k'] != 20 or item['metric'] == 'hit_ratio':
             continue
-        best = ', '.join('G' + str(g) for g in item['largest_absolute_gain_groups'])
+        best = ', '.join('G' + str(g) for g in item['largest_absolute_gain_groups']) or 'N/A'
         if not item['any_positive_gain']:
             best += ' (no positive gain)'
         report.append(f"| {item['dataset']} | {item['model']} | {item['metric']}@20 | {best} | "
-                      f"{item['overall_gain']:+.6f} | {item['g1_minus_g4_absolute_gain']:+.6f} | "
+                      f"{show(item['overall_gain'])} | {show(item['g1_minus_g4_absolute_gain'])} | "
                       f"{'YES' if item['review_required'] else ''} |")
+    report += ['', '## Actual group sizes and degree ranges', '',
+               '| Dataset | Model | Group | Users | Assigned degree range | Observed degree range |',
+               '|---|---|---|---:|---|---|']
+    for dataset, model in sorted({(r['dataset'], r['model']) for r in rows}):
+        for r in [r for r in rows if r['dataset'] == dataset and r['model'] == model
+                  and r['metric'] == 'recall' and r['k'] == opts.ks[0]]:
+            observed = f"{r['degree_min']}–{r['degree_max']}" if r['users'] else 'empty'
+            report.append(f"| {dataset} | {model} | G{r['group']} | {r['users']} | {r['degree_range']} | {observed} |")
     if flagged:
         report += ['', 'Source-checkpoint score differences exceed the chosen review tolerance:',
                    *['- ' + value for value in flagged],
@@ -207,11 +235,16 @@ def plot_gains(output, rows):
                 if not part:
                     axis.set_visible(False)
                     continue
-                axis.bar([r['group'] for r in part], [100 * r['absolute_gain'] for r in part],
-                         color=['#3479b2' if r['absolute_gain'] >= 0 else '#c86253' for r in part])
+                valid = [r for r in part if r['absolute_gain'] is not None]
+                axis.bar([r['group'] for r in valid], [100 * r['absolute_gain'] for r in valid],
+                         color=['#3479b2' if r['absolute_gain'] >= 0 else '#c86253' for r in valid])
+                for r in part:
+                    if r['users'] == 0:
+                        axis.annotate('n=0', (r['group'], 0), ha='center', va='bottom', fontsize=8)
                 axis.axhline(0, color='#333333', linewidth=.7)
                 axis.set_xticks([1, 2, 3, 4])
                 axis.set_xticklabels(['G1\nLow', 'G2', 'G3', 'G4\nHigh'])
+                axis.set_xlim(.5, 4.5)
                 axis.set_title(model + (' *review' if part[0]['review_required'] else ''))
                 axis.set_ylabel('Absolute gain (percentage points)')
             for axis in list(axes.flat)[len(models):]:
@@ -230,6 +263,10 @@ def main():
     parser.add_argument('--output-root', type=Path)
     parser.add_argument('--dataset', choices=['ali', 'amazon', 'yelp2018'])
     parser.add_argument('--models', nargs='+')
+    parser.add_argument('--group-method', choices=['equal_freq', 'equal_width', 'fixed'], default='equal_freq',
+                        help='User grouping: equal_freq (original, default), equal_width, or fixed')
+    parser.add_argument('--degree-thresholds', type=int, nargs=3, metavar=('T1', 'T2', 'T3'),
+                        default=[5, 20, 50], help='Fixed grouping: <=T1, (T1,T2], (T2,T3], >T3')
     parser.add_argument('--fp16-manifest', type=Path, help='Explicit opt-in for the converted sharing package')
     parser.add_argument('--ks', type=int, nargs='+', default=[10, 20, 50])
     parser.add_argument('--batch-size', type=int, default=256)
@@ -245,8 +282,11 @@ def main():
     parser.add_argument('--output', type=Path, help=argparse.SUPPRESS)
     opts = parser.parse_args()
     opts.ks = sorted(set(opts.ks))
-    if min(opts.ks) < 1 or min(opts.batch_size, opts.threads) < 1 or opts.gpu_id < 0 or opts.drift_tolerance < 0:
+    if not opts.ks or min(opts.ks) < 1 or min(opts.batch_size, opts.threads) < 1 or opts.gpu_id < 0 or opts.drift_tolerance < 0:
         parser.error('Invalid K, batch size, threads, GPU ID, or drift tolerance')
+    if any(t < 0 for t in opts.degree_thresholds) or not all(
+            a < b for a, b in zip(opts.degree_thresholds, opts.degree_thresholds[1:])):
+        parser.error('--degree-thresholds must be nonnegative and strictly increasing')
     if opts.checkpoint:
         if opts.output is None:
             parser.error('Worker requires --output')
@@ -255,12 +295,16 @@ def main():
     if opts.checkpoint_root is None or opts.output_root is None:
         parser.error('--checkpoint-root and --output-root are required')
     plans = plan(opts)
-    digest = hashlib.sha256((code_digest() + sha256(Path(__file__))).encode()).hexdigest()
-    specification = dict(version=1, jobs=plans, ks=opts.ks, batch_size=opts.batch_size,
+    digest = hashlib.sha256((code_digest() + sha256(Path(__file__)) +
+                             sha256(ROOT / 'utils' / 'user_activity.py')).encode()).hexdigest()
+    specification = dict(version=2, jobs=plans, ks=opts.ks, batch_size=opts.batch_size,
+                         group_method=opts.group_method,
+                         degree_thresholds=opts.degree_thresholds if opts.group_method == 'fixed' else None,
                          cpu=opts.cpu, threads=opts.threads, drift_tolerance=opts.drift_tolerance,
                          code_sha256=digest, config_sha256=sha256(opts.config),
                          fp16_manifest_sha256=sha256(opts.fp16_manifest) if opts.fp16_manifest else None)
-    print(f'Validated {len(plans)} fixed checkpoints and data fingerprints; four user groups.', flush=True)
+    print(f'Validated {len(plans)} fixed checkpoints and data fingerprints; '
+          f'four user groups using {opts.group_method}.', flush=True)
     if opts.dry_run:
         for p in plans:
             print(f"  {p['dataset']}/{p['model']}/{p['phase']}")
@@ -285,6 +329,8 @@ def main():
             if complete.exists():
                 result = read_json(complete)
                 if (result['checkpoint_sha256'] != p['sha256'] or result['ks'] != opts.ks
+                        or result['group_method'] != opts.group_method
+                        or result['degree_thresholds'] != specification['degree_thresholds']
                         or sha256(directory / 'users.npz') != result['users_npz_sha256']):
                     raise ValueError('Existing result mismatch: ' + str(directory))
                 print('SKIP ' + str(directory), flush=True)
@@ -296,7 +342,8 @@ def main():
                        '--data-path', str(opts.data_path.resolve()), '--output', str(directory.resolve()),
                        '--batch-size', str(opts.batch_size), '--gpu-id', str(opts.gpu_id),
                        '--threads', str(opts.threads), '--drift-tolerance', str(opts.drift_tolerance),
-                       '--ks', *map(str, opts.ks)]
+                       '--ks', *map(str, opts.ks), '--group-method', opts.group_method,
+                       '--degree-thresholds', *map(str, opts.degree_thresholds)]
             if opts.cpu:
                 command.append('--cpu')
             if opts.fp16_manifest:

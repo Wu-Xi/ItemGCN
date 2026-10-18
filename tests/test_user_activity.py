@@ -9,7 +9,7 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from utils.user_activity import partition_users, metrics_from_hits, paired_gains, evaluate_users
+from utils.user_activity import partition_users, metrics_from_hits, paired_gains, evaluate_users, aggregate
 from utils.checkpoint import read_metadata, sha256
 
 
@@ -34,6 +34,60 @@ class ActivityTest(unittest.TestCase):
                                                    [0, 1 / np.log2(3)]])
         with self.assertRaises(ValueError):
             metrics_from_hits([[False]], [0], [1])
+
+    def test_equal_width_inclusive_integer_ranges_and_ties(self):
+        ids = np.arange(9)
+        train = {u: list(range(d)) for u, d in enumerate([2, 3, 4, 4, 5, 6, 7, 8, 11])}
+        groups, _, stats = partition_users(ids, train, method='equal_width')
+        # Inclusive span 2..11: ranges 2..4, 5..6, 7..9, 10..11.
+        np.testing.assert_array_equal(groups, [1, 1, 1, 1, 2, 2, 3, 3, 4])
+        self.assertEqual([s['degree_range'] for s in stats], ['2–4', '5–6', '7–9', '10–11'])
+        reverse, _, _ = partition_users(ids[::-1], train, method='equal_width')
+        np.testing.assert_array_equal(reverse[::-1], groups)
+
+    def test_equal_width_degenerate_and_short_ranges(self):
+        for degrees, expected in [([7, 7, 7, 7], [1, 1, 1, 1]),
+                                  ([0, 0, 1, 1], [1, 1, 3, 3]),
+                                  ([0, 1, 2, 2], [1, 2, 3, 3])]:
+            with self.subTest(degrees=degrees):
+                groups, _, stats = partition_users(np.arange(4),
+                    {u: list(range(d)) for u, d in enumerate(degrees)}, method='equal_width')
+                np.testing.assert_array_equal(groups, expected)
+                for s in stats:
+                    if s['users'] == 0:
+                        self.assertIsNone(s['degree_min'])
+                        self.assertIsNone(s['degree_max'])
+                        self.assertIsNone(s['degree_mean'])
+
+    def test_fixed_boundaries_include_cutoffs_in_lower_group(self):
+        degrees = [0, 5, 6, 20, 21, 50, 51, 100]
+        groups, _, stats = partition_users(np.arange(8),
+            {u: list(range(d)) for u, d in enumerate(degrees)}, method='fixed', thresholds=[5, 20, 50])
+        np.testing.assert_array_equal(groups, [1, 1, 2, 2, 3, 3, 4, 4])
+        self.assertEqual([s['degree_range'] for s in stats], ['≤5', '6–20', '21–50', '≥51'])
+
+    def test_reject_invalid_grouping_inputs(self):
+        for thresholds in ([5, 5, 20], [-1, 5, 20], [5, 20], [5.5, 20, 50], [True, 20, 50]):
+            with self.subTest(thresholds=thresholds), self.assertRaises(ValueError):
+                partition_users(np.arange(4), {}, method='fixed', thresholds=thresholds)
+        with self.assertRaises(ValueError):
+            partition_users(np.arange(4), {}, method='unknown')
+
+    def test_empty_group_metrics_and_total_contribution(self):
+        groups = np.array([2, 2, 3, 3])
+        original = {m: np.full((4, 2), .4) for m in ('recall', 'ndcg', 'hit_ratio')}
+        changed = {m: values + .1 for m, values in original.items()}
+        aggregated = aggregate(original, groups)
+        self.assertEqual(aggregated['recall']['1'], [None, None])
+        self.assertEqual(aggregated['recall']['4'], [None, None])
+        rows = paired_gains(original, changed, groups, [10, 20])
+        json.dumps(dict(metrics=aggregated, rows=rows), allow_nan=False)
+        for metric in original:
+            for k in [10, 20]:
+                selected = [r for r in rows if r['metric'] == metric and r['k'] == k]
+                self.assertAlmostEqual(sum(r['overall_gain_contribution'] for r in selected), .1)
+                self.assertIsNone(selected[0]['absolute_gain'])
+                self.assertEqual(selected[0]['overall_gain_contribution'], 0)
 
     def test_weighted_gains_and_zero_denominator(self):
         groups = np.array([1, 1, 1, 2, 2, 3, 3, 4, 4])
@@ -120,19 +174,53 @@ class ActivityTest(unittest.TestCase):
                 np.savez_compressed(directory / 'users.npz', user_ids=np.arange(8), groups=groups,
                                     degrees=np.arange(8), recall=values, ndcg=values, hit_ratio=values)
                 result = dict(users_npz_sha256=sha256(directory / 'users.npz'), review_required=False,
-                              data_files={}, groups=[dict(degree_min=g, degree_max=g + 1) for g in range(4)])
+                              data_files={}, ks=[20], group_method='equal_freq', degree_thresholds=None,
+                              groups=[dict(degree_min=g, degree_max=g + 1, degree_range=f'{g}–{g+1}') for g in range(4)])
                 (directory / 'evaluation.json').write_text(json.dumps(result), encoding='utf-8')
-            opts = SimpleNamespace(output_root=root, ks=[20], plot=False)
+            opts = SimpleNamespace(output_root=root, ks=[20], plot=False,
+                                   group_method='equal_freq', degree_thresholds=[5, 20, 50])
             summarize(opts, [dict(dataset='tiny', model='rns')])
-            summary = json.loads((root / 'summary.json').read_text())
+            summary = json.loads((root / 'summary.json').read_text(encoding='utf-8'))
             self.assertEqual(len(summary['rows']), 12)
             self.assertEqual(summary['comparisons'][0]['largest_absolute_gain_groups'], [1, 2, 3, 4])
             self.assertFalse(summary['comparisons'][0]['any_positive_gain'])
-            self.assertIn('no positive gain', (root / 'REPORT.md').read_text())
+            self.assertIn('no positive gain', (root / 'REPORT.md').read_text(encoding='utf-8'))
             self.assertTrue((root / 'group_gains.csv').exists())
             (root / 'tiny/rns/item_only/users.npz').write_bytes(b'invalid')
             with self.assertRaisesRegex(ValueError, 'checksum mismatch'):
                 summarize(opts, [dict(dataset='tiny', model='rns')])
+
+    def test_summary_all_methods_and_empty_endpoints(self):
+        from evaluate_user_activity import summarize
+        for method in ('equal_freq', 'equal_width', 'fixed'):
+            with self.subTest(method=method), tempfile.TemporaryDirectory() as temp:
+                root = Path(temp)
+                groups, degrees, stats = partition_users(np.arange(8),
+                    {u: list(range(10 if u < 4 else 30)) for u in range(8)}, method=method)
+                for phase in ('original', 'item_only'):
+                    directory = root / 'tiny/rns' / phase
+                    directory.mkdir(parents=True)
+                    values = np.full((8, 1), .5 if phase == 'original' else .4)
+                    np.savez_compressed(directory / 'users.npz', user_ids=np.arange(8), groups=groups,
+                        degrees=degrees, recall=values, ndcg=values, hit_ratio=values)
+                    result = dict(users_npz_sha256=sha256(directory / 'users.npz'), review_required=False,
+                        data_files={}, groups=stats, ks=[20], group_method=method,
+                        degree_thresholds=[5, 20, 50] if method == 'fixed' else None)
+                    (directory / 'evaluation.json').write_text(json.dumps(result), encoding='utf-8')
+                opts = SimpleNamespace(output_root=root, ks=[20], plot=False,
+                    group_method=method, degree_thresholds=[5, 20, 50])
+                summarize(opts, [dict(dataset='tiny', model='rns')])
+                summary = json.loads((root / 'summary.json').read_text(encoding='utf-8'))
+                self.assertEqual(summary['group_method'], method)
+                self.assertAlmostEqual(summary['comparisons'][0]['overall_gain'], -.1)
+                self.assertEqual(len(summary['rows']), 12)
+                if method == 'fixed':
+                    self.assertIsNone(summary['comparisons'][0]['g1_minus_g4_absolute_gain'])
+                    self.assertIn('N/A (empty group)', (root / 'REPORT.md').read_text(encoding='utf-8'))
+                    self.assertEqual(summary['comparisons'][0]['largest_absolute_gain_groups'], [2, 3])
+                opts.group_method = 'fixed' if method != 'fixed' else 'equal_freq'
+                with self.assertRaisesRegex(ValueError, 'grouping/cutoffs differ'):
+                    summarize(opts, [dict(dataset='tiny', model='rns')])
 
 
 if __name__ == '__main__':
